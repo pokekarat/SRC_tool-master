@@ -73,7 +73,7 @@ namespace ParseModelProject
             for (int k = 1; k < sampleFile.Length; k++)
             {
                 sampleValues = sampleFile[k].Split(new char[2] { ' ', '\t' });
-                totalEnergy += (double.Parse(sampleValues[sampleValues.Length - 1]) / 1000.0);
+                totalEnergy += (double.Parse(sampleValues[sampleValues.Length - 1])/ 1000.0);
             }
         }
 
@@ -113,6 +113,8 @@ namespace ParseModelProject
                 {
                     double x = double.Parse(e.Evaluate().ToString());
                     appEnergy += float.Parse(e.Evaluate().ToString()) / 1000;
+                    /*if(appEnergy > 100)
+                        Console.WriteLine("appEnergy " + appEnergy);*/
                 }
                 catch (EvaluationException ee)
                 {

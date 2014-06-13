@@ -32,9 +32,10 @@ namespace SRC_GUI
         // Default Settings
         private void btnEkarat_Click(object sender, EventArgs e)
         {
-            textPowerMonitorSRC.Text = @"C:\Program Files (x86)\Monsoon Solutions Inc\Power Monitor\PowerToolCmd.exe";
-            textSampleRoot.Text = @"C:\Users\pok\Documents\GitHub\SRC_tool";
-            comboSampleType.SelectedIndex = 7;
+            textRScript.Text = @"C:\Users\pok\SRC_tool-master\SRC_tool-master\asynComponent.r";
+            textPowerMonitorSRC.Text = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd.exe";
+            textSampleRoot.Text = @"C:\data\train\1\[BACKUP][POWER][20140310]\SamsungS4";
+            comboSampleType.SelectedIndex =8;
             comboBoxEuraqaServeIP.SelectedIndex = 1;
         }
 
@@ -120,6 +121,11 @@ namespace SRC_GUI
                     textAppName.Text = "jp.naver.SJLGPP";
                     Config.PACKAGE = "jp.naver.SJLGPP";
                     Config.ACTIVITY = "com.treenod.android.UnityPlayerActivity";
+                    break;
+                case @"jewel":
+                    textAppName.Text = "com.teamlava.jewel";
+                    Config.PACKAGE = "com.teamlava.jewel";
+                    Config.ACTIVITY = "";
                     break;
                 default:
                     textAppName.Text = "none";
@@ -271,7 +277,8 @@ namespace SRC_GUI
             updateStatus("Start pulling files from \"" + path + "\"");
 
             //string path = "/c " + "adb pull /data/local/tmp/stat " + savePath;
-            ProcessStartInfo pullFile = new ProcessStartInfo("cmd.exe", "/c " + "adb pull /data/local/tmp/stat " + path);
+            string newAdbPath = @"C:\Program Files (x86)\Android\android-sdk\platform-tools\";
+            ProcessStartInfo pullFile = new ProcessStartInfo("cmd.exe", "/c " + newAdbPath+"adb pull /data/local/tmp/stat " + path);
             pullFile.CreateNoWindow = false;
             pullFile.UseShellExecute = false;
             pullFile.RedirectStandardError = true;

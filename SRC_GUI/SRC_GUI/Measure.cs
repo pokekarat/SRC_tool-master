@@ -20,10 +20,11 @@ namespace SRC_GUI
         private string _package;
         private string _activity;
         private System.Windows.Forms.Timer Clock;
-        private System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"beep.wav");
+       // private System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"notification-beep.wav");
         delegate void SetItemCallback(string text);
 
         string savePath = "";
+        string newAdbPath = @"C:\Program Files (x86)\Android\android-sdk\platform-tools\";
 
         public Measure(int start, int stop, string package, string activity)
         {
@@ -51,7 +52,7 @@ namespace SRC_GUI
         private void chkBusybox()
         {
             //Check whether busybox exists in /data/local/tmp/ or not.
-            ProcessStartInfo chkBusybox = new ProcessStartInfo("cmd.exe", "/c " + "adb shell ls /data/local/tmp/busybox > " + Config.SAMPLEROOT + @"\check.txt");
+            ProcessStartInfo chkBusybox = new ProcessStartInfo("cmd.exe", "/c " + newAdbPath+"adb shell ls /data/local/tmp/busybox > " + Config.SAMPLEROOT + @"\check.txt");
             chkBusybox.CreateNoWindow = true;
             chkBusybox.UseShellExecute = false;
             chkBusybox.RedirectStandardError = true;
@@ -97,8 +98,8 @@ namespace SRC_GUI
                 switch (this.currentTime)
                 {
                     case 10:
-                        Thread t1 = new Thread(startSampling);
-                        t1.Start();
+                       // Thread t1 = new Thread(startSampling);
+                       // t1.Start();
                         break;
                     case 20:
                         updateStatus("Start power meter");
@@ -106,18 +107,18 @@ namespace SRC_GUI
                         monsoon.Start();
                         break;
                     case 45:
-                        player.Play();
+                       // player.Play();
                         break;
                     case 50:
-                        //Thread t2 = new Thread(startApp);
-                        //t2.Start();
+                       // Thread t2 = new Thread(startApp);
+                       // t2.Start();
                         updateStatus("Start testing app");
                         break;
                     case 150:
                         updateStatus("Stop testing app");
                         break;
                     case 153:
-                        player.Play();
+                        //player.Play();
                         break;
                     case 180:
                         updateStatus("Sample should stop");
@@ -139,7 +140,7 @@ namespace SRC_GUI
         private void cleanFile()
         {
             updateStatus("Clean files");
-            ProcessStartInfo rmFile = new ProcessStartInfo("cmd.exe", "/c " + "adb shell rm /data/local/tmp/stat/*.txt");
+            ProcessStartInfo rmFile = new ProcessStartInfo("cmd.exe", "/c " + newAdbPath + "adb shell rm /data/local/tmp/stat/*.txt");
             rmFile.CreateNoWindow = false;
             rmFile.UseShellExecute = false;
             rmFile.RedirectStandardError = true;
@@ -151,14 +152,22 @@ namespace SRC_GUI
         private void startSampling()
         {
             updateStatus("Start sampling");
-            Process sample = new Process();
+           /* Process sample = new Process();
             sample.StartInfo.FileName = "cmd.exe";
-            sample.StartInfo.Arguments = "/c " + "echo sh -c \"./data/local/tmp/a.out 1 170 " + Config.WIFI + " " + Config.APP2TEST + " &\" | adb shell";
+            sample.StartInfo.Arguments = "/c " + "echo -c \"./data/local/tmp/a.out 1 170 " + Config.WIFI + " " + Config.APP2TEST + " &\" | adb shell";
             sample.StartInfo.UseShellExecute = false;
             //sample.StartInfo.RedirectStandardError = true;
             //sample.StartInfo.RedirectStandardOutput = true;
-            sample.Start();
+            sample.Start(); */
             //sample.WaitForExit();
+
+            string exec = newAdbPath + "adb shell \"./data/local/tmp/a.out 1 170 " + Config.WIFI + " " + Config.APP2TEST + " &\"";
+            ProcessStartInfo sample = new ProcessStartInfo("cmd.exe", "/c " + exec);
+            sample.CreateNoWindow = true;
+            sample.UseShellExecute = false;
+            sample.RedirectStandardError = true;
+            sample.RedirectStandardOutput = true;
+            Process process = Process.Start(sample);
         }
 
         private void StartMonsoon()
@@ -167,8 +176,8 @@ namespace SRC_GUI
             //int measureDuration = 150; //seconds
             Process powerMonitor = new Process();
             powerMonitor.StartInfo.FileName = Config.POWERMETER;
-            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=" + Config.VOLT + " /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + @"\power.pt4  /TRIGGER=DTXD040A"; //60 seconds
-            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=" + Config.VOLT + " /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + @"\power.pt4  /TRIGGER=DTXD180A"; //60 seconds
+            // powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=" + Config.VOLT + " /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + @"\power.pt4  /TRIGGER=DTXD040A"; //40 seconds
+            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=" + Config.VOLT + " /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + @"\power.pt4  /TRIGGER=DTXD180A"; //180 seconds
             //powerMonitor.StartInfo.UseShellExecute = false;
             powerMonitor.Start();
             powerMonitor.WaitForExit();
@@ -194,7 +203,7 @@ namespace SRC_GUI
             updateStatus("Start Pull files");
 
             //string path = "/c " + "adb pull /data/local/tmp/stat " + savePath;
-            ProcessStartInfo pullFile = new ProcessStartInfo("cmd.exe", "/c " + "adb pull /data/local/tmp/stat " + savePath);
+            ProcessStartInfo pullFile = new ProcessStartInfo("cmd.exe", "/c " + newAdbPath + "adb pull /data/local/tmp/stat " + savePath);
             pullFile.CreateNoWindow = false;
             pullFile.UseShellExecute = false;
             pullFile.RedirectStandardError = true;
