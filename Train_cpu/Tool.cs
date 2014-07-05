@@ -8,7 +8,7 @@ namespace Train_cpu
 {
     class Tool
     {
-        public static double PowerParse(string folder)
+        public static double powerParse(string folder)
         {
             string input = folder + @"\power.pt4";
 
@@ -42,20 +42,19 @@ namespace Train_cpu
 
 
             double sum = 0;
-            double powAvg = 0;
+            double powerAvg = 0;
             double count = 0;
             for (long sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++)
             {
-                if (sampleIndex < 50000) continue;
                 PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
-                sum += (sample.mainCurrent);//sample.mainVoltage);
+                sum += (sample.mainCurrent * sample.mainVoltage);
                 count++;
             }
 
-            powAvg = sum / count;
+            powerAvg = sum / count;
             pt4Reader.Close();
 
-            return powAvg;
+            return powerAvg;
         }
     }
 }
