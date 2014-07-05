@@ -11,33 +11,67 @@ namespace Train_cpu
 {
     public class Train_system
     {
-        String folderPath = @"C:\Users\pok\Semionline\Nexus\CPU_idle\";
-        String adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
-      
-        public Train_system()
-        {}
+        String rootPath = "";
+        String folderPath = "";
+        String adbPath = "";
+        String trainAppName = "";
+        String brightPath = "";
+        String powerMeterPath = "";
+
+        int[] freqs;
+        int[] cpuNums;
+        
+        public Train_system(int phone_id)
+        {
+            //Nexus S
+            if (phone_id == 1)
+            {
+                rootPath = @"C:\Users\pok\Semionline\";
+                folderPath = rootPath + @"Nexus\CPU_idle\";
+                adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
+                trainAppName = "com.example.trainandroid";
+                brightPath = "/sys/class/backlight/s5p_bl/brightness";
+                powerMeterPath = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
+
+                freqs = new int[]{ 100000, 200000, 400000, 800000, 1000000 };
+                cpuNums = new int[] { 0 };
+               
+            }
+            //Galaxy S4
+            else if (phone_id == 2)
+            {
+                rootPath = @"D:\Semionline\";
+                folderPath = rootPath + @"S4\CPU_idle\";
+                adbPath = @"D:\android-sdk_r16-windows\android-sdk-windows\platform-tools\";
+                trainAppName = "com.example.trains4";
+                brightPath = "/sys/class/backlight/panel/brightness";
+                powerMeterPath = @"D:\Program Files (x86)\Monsoon Solutions Inc\Power Monitor";
+
+                freqs = new int[] { 100000, 200000, 400000, 800000, 1000000 };
+                cpuNums = new int[] { 0,1,2,3 };
+                
+            }
+        
+        }
 
         public void execute()
         {
-            // 
-            int[] freq = { 400000, 200000 };//, 400000, 800000, 1000000 }; //245760, 320000, 480000, 800000
+          
             int[] idle = { 1, 10, 20, 50, 80, 100, 200, 500, 800, 1000 }; //idle time
             int[] util = {1, 25, 50, 75 }; // { 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+
             ArrayList measures = new ArrayList();
-
-            //TextWriter tw;
-
            
             String command = "";
-          
        
             Console.WriteLine("Start training >> ");
 
-            if (!this.isProcessStart("com.example.trainandroid"))
+            //Call train app (Android)
+            if (!this.isProcessStart(trainAppName))
             {
                 //start com.example.trainandroid
-                Console.WriteLine("Start com.example.trainandroid");
-                command = adbPath + "adb shell \"su -c 'am start -n com.example.trainandroid/com.example.trainandroid.MainActivity --es extraKey start'\"";
+                Console.WriteLine("Start "+trainAppName);
+                command = adbPath + "adb shell \"su -c 'am start -n " + trainAppName + "/" + trainAppName + ".MainActivity --es extraKey start'\"";
                 ProcessStartInfo amInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
                 amInfo.CreateNoWindow = true;
                 amInfo.UseShellExecute = false;
@@ -45,7 +79,7 @@ namespace Train_cpu
                 amInfo.RedirectStandardOutput = true;
                 Process amProc = Process.Start(amInfo);
 
-                while (!this.isProcessStart("com.example.trainandroid"))
+                while (!this.isProcessStart(trainAppName))
                 {
                     Thread.Sleep(5000); //sleep 10 seconds waiting for strc start.
                     Process.Start(amInfo);
@@ -53,34 +87,32 @@ namespace Train_cpu
 
             }
 
-        
-
             Thread.Sleep(30000);
 
             int cntSrcCall = 0; 
             //Train freq
-            for (int f = 0; f < freq.Length; f++)
+            for (int f = 0; f < freqs.Length; f++)
             {           
             
-                command = adbPath + "adb shell \"su -c 'echo " + freq[f] + " > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq'\"";
+                command = adbPath + "adb shell \"su -c 'echo " + freqs[f] + " > /sys/devices/system/cpu/"+cpuNums[0]+"/cpufreq/scaling_min_freq'\"";
                 ProcessStartInfo cpufreqMin = new ProcessStartInfo("cmd.exe", "/c " + command);
                 cpufreqMin.CreateNoWindow = true;
                 cpufreqMin.UseShellExecute = false;
                 cpufreqMin.RedirectStandardError = true;
                 cpufreqMin.RedirectStandardOutput = true;
                 Process process1 = Process.Start(cpufreqMin);
-                Console.WriteLine("Set min freq = " + freq[f]);
+                Console.WriteLine("Set min freq = " + freqs[f]);
  
                 Thread.Sleep(5000);
 
-                command = adbPath + "adb shell \"su -c 'echo " + freq[f] + " > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq'\"";
+                command = adbPath + "adb shell \"su -c 'echo " + freqs[f] + " > /sys/devices/system/cpu/"+cpuNums[0]+"/cpufreq/scaling_max_freq'\"";
                 ProcessStartInfo cpufreqMax = new ProcessStartInfo("cmd.exe", "/c " + command);
                 cpufreqMax.CreateNoWindow = true;
                 cpufreqMax.UseShellExecute = false;
                 cpufreqMax.RedirectStandardError = true;
                 cpufreqMax.RedirectStandardOutput = true;
                 Process process2 = Process.Start(cpufreqMax);
-                Console.WriteLine("Set max freq = " + freq[f]);
+                Console.WriteLine("Set max freq = " + freqs[f]);
 
                 Thread.Sleep(5000);
 
@@ -92,7 +124,7 @@ namespace Train_cpu
                     for (int u = 0; u < util.Length; u++)
                     {
 
-                        Console.WriteLine("Test no. "+t+" training... util = " + (util[u]) + " freq = " + freq[f] + "");
+                        Console.WriteLine("Test no. "+t+" training... util = " + (util[u]) + " freq = " + freqs[f] + "");
 
                         for (int i = 0; i < idle.Length; i++)
                         {
@@ -125,7 +157,7 @@ namespace Train_cpu
 
                             //set DUT brightness to low.
                             Console.WriteLine("Low DUT brightness");
-                            command = adbPath + "adb shell \"su -c 'echo 0 > /sys/class/backlight/s5p_bl/brightness'\"";
+                            command = adbPath + "adb shell \"su -c 'echo 0 > "+this.brightPath+"'\"";
                             ProcessStartInfo brightInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
                             brightInfo.CreateNoWindow = true;
                             brightInfo.UseShellExecute = false;
@@ -136,13 +168,13 @@ namespace Train_cpu
                             Thread.Sleep(5000);
 
                             //Call Monsoon
-                            callPowerMeter(folderPath + "test_"+t+"_freq_" + freq[f] + "_util_" + (util[u]) + "_idle_" + idle[i] + ".pt4");
+                            callPowerMeter(folderPath + "test_"+t+"_freq_" + freqs[f] + "_util_" + (util[u]) + "_idle_" + idle[i] + ".pt4");
 
                             Thread.Sleep(5000);
 
                             //set DUT brightness to high.
                             Console.WriteLine("High DUT brightness");
-                            command = adbPath + "adb shell \"su -c 'echo 255 > /sys/class/backlight/s5p_bl/brightness'\"";
+                            command = adbPath + "adb shell \"su -c 'echo 255 > " + this.brightPath + "'\"";
                             brightInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
                             Process.Start(brightInfo);
 
@@ -165,7 +197,7 @@ namespace Train_cpu
 
                             //pull file
                             Console.WriteLine("Start pull file");
-                            string dataPath = folderPath + "test_" + t + "_freq_" + freq[f] + "_util_" + (util[u]) + "_" + idle[i] + ".txt";
+                            string dataPath = folderPath + "test_" + t + "_freq_" + freqs[f] + "_util_" + (util[u]) + "_" + idle[i] + ".txt";
                             command = adbPath + "adb pull /sdcard/semionline/base.txt " + dataPath;
                             ProcessStartInfo pullInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
                             pullInfo.CreateNoWindow = true;
@@ -181,26 +213,6 @@ namespace Train_cpu
                         Console.WriteLine("Start charging...");
                         Thread.Sleep(1000 * 60 * 5); // 5 mins break for battery charging.
 
-                        /* for (int i = 1; i <= 5; i++)
-                         {
-                             Console.Write(" " + i);
-                             string powerPath = folderPath + @"\freq_" + freq[f] + "_util_" + u + "_" + i + ".pt4";
-                             //tw = new StreamWriter(powerPath);
-
-                             //Call Monsoon.
-                             Process powerMonitor = new Process();
-                             powerMonitor.StartInfo.FileName = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
-                             powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" +powerPath+ "  /TRIGGER=DTXD100A"; //DTYD60A
-                             powerMonitor.Start();
-                             powerMonitor.WaitForExit();
-                             Thread.Sleep(delayAfterMonsoon);
-
-                             Console.WriteLine("End loops");
-                         }
-
-                         Thread.Sleep(5000);
-                         */
-
                     }
                 }
 
@@ -214,7 +226,7 @@ namespace Train_cpu
             String pathPowerSave = savePath;
            
             Process powerMonitor = new Process();
-            powerMonitor.StartInfo.FileName = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
+            powerMonitor.StartInfo.FileName = powerMeterPath;
             powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + pathPowerSave + "  /TRIGGER=DTXD50A"; //DTYD60A
             powerMonitor.Start();
             powerMonitor.WaitForExit();
@@ -237,7 +249,7 @@ namespace Train_cpu
 
         public Boolean isProcessStart(string name)
         {
-            String adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
+            
             string command = adbPath + "adb shell ps | grep "+name;
             ProcessStartInfo cpuInfo1 = new ProcessStartInfo("cmd.exe", "/c " + command);
             cpuInfo1.CreateNoWindow = true;
@@ -301,6 +313,6 @@ namespace Train_cpu
             Thread.Sleep(chargeCap * 30 * 1000); //0.5 min per % 
             
             Console.WriteLine("Finish charging");
-        }
+        }     
     }
 }
