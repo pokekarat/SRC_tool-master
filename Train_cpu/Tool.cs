@@ -8,9 +8,9 @@ namespace Train_DUT
 {
     class Tool
     {
-        public static double powerParse(string folder)
+        public static double powerParse(string folder, int beginIndex)
         {
-            string input = folder + @"\power.pt4";
+            string input = folder;
 
             FileStream pt4Stream = File.Open(
                                                  input,
@@ -44,7 +44,7 @@ namespace Train_DUT
             double sum = 0;
             double powerAvg = 0;
             double count = 0;
-            for (long sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++)
+            for (long sampleIndex = beginIndex; sampleIndex < sampleCount; sampleIndex++)
             {
                 PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
                 sum += (sample.mainCurrent * sample.mainVoltage);
