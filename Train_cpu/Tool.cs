@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Parse;
-namespace Train_cpu
+namespace Train_DUT
 {
     class Tool
     {

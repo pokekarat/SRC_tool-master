@@ -7,7 +7,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Train_cpu
+namespace Train_DUT
 {
     public class Train_CPU
     {

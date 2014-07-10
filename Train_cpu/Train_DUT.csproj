@@ -8,7 +8,7 @@
     <ProjectGuid>{95C7C3E6-FA42-46ED-8D45-616A4F7A4E26}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsoleApplication1</RootNamespace>
+    <RootNamespace>Train_DUT</RootNamespace>
     <AssemblyName>Train_cpu</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

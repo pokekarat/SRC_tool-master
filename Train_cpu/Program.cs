@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Text.RegularExpressions;
 
-namespace Train_cpu
+namespace Train_DUT
 {
 
     class Program
@@ -13,14 +13,15 @@ namespace Train_cpu
         static void Main(string[] args)
         {
 
-            int mode = 1; // 1=train, 2=evaluate
+            int mode = 3; // 1=train, 2=evaluate, 3=screen
             //Train
             if (mode == 1)
             {
                 Train_CPU ts = new Train_CPU(2);
                 ts.execute();
             }
-            else
+            
+            if(mode == 2)
             {
 
                 //Evaluation
@@ -36,6 +37,11 @@ namespace Train_cpu
                 }
 
                 Console.WriteLine("Average = " + energySum / 5);
+            }
+
+            if (mode == 3)
+            {
+                new Train_SCREEN().execute();
             }
 
             Console.WriteLine("Finish.");
