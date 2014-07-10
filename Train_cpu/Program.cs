@@ -17,7 +17,7 @@ namespace Train_cpu
             //Train
             if (mode == 1)
             {
-                Train_system ts = new Train_system(2);
+                Train_CPU ts = new Train_CPU(2);
                 ts.execute();
             }
             else
