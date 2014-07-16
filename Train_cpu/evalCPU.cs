@@ -112,7 +112,7 @@ namespace Train_DUT
         }
     }
 
-    public class Train_SCREEN
+    public class evalCPU
     {
         string samplePath = @"D:\SemiOnline\Experiment\Nexus\CPU_idle";
         private List<double> accFreq = new List<double>();
@@ -128,7 +128,12 @@ namespace Train_DUT
 
         Dictionary<int, double> compare = new Dictionary<int, double>();
 
-        public Train_SCREEN()
+        private ArrayList trainSet = new ArrayList();
+        private ArrayList testSet = new ArrayList();
+
+        private ArrayList resultNotFound = new ArrayList();
+
+        public evalCPU()
         {
             
         }
@@ -154,17 +159,19 @@ namespace Train_DUT
                 }
             }*/
 
-            string[] freqs = { "200000", "400000", "800000" };
+            string[] freqs = { "1000000" }; //"200000" , "400000", "800000" };
             string[] utils = { "1", "25", "50", "75" };
-            string[] idles = {"1","10","20","50","80","100","200","500","800","1000"};
+            string[] idles = {"1","10","20" ,"50","80","100","200","500","800","1000"};
 
-           
+            trainSet.Add("freq util idleTime idleEntry power");
+            testSet.Add("freq util idleTime idleEntry power");
 
-            for(int d=0; d<idles.Length; d++)
+
+            for (int f = 0; f < freqs.Length; f++)
             {
                 for (int u = 0; u < utils.Length; u++)
                 {
-                    for (int f = 0; f < freqs.Length; f++)
+                    for (int d = 0; d < idles.Length; d++)
                     {
                         
                         Console.WriteLine("\nFile = freq_" + freqs[f] + "_util_" + utils[u] + "_" + idles[d] + ".txt");
@@ -175,6 +182,12 @@ namespace Train_DUT
                             string powerFile = @"\test_" + t + "_freq_" + freqs[f] + "_util_" + utils[u] + "_idle_" + idles[d] + ".pt4";
 
                             double power = Tool.powerParse(samplePath + powerFile, 10);
+
+                            if (!File.Exists(samplePath + dataFile))
+                            {
+                                resultNotFound.Add(samplePath + dataFile);
+                                continue;
+                            }
 
                             string[] data = File.ReadAllLines(samplePath + dataFile);
 
@@ -226,6 +239,15 @@ namespace Train_DUT
                             accEntryData.Clear();
                         }
 
+                        if (utilList.Count != 7)
+                        {
+                            utilList.Add(utilList.Median());
+                            idleList.Add(idleList.Median());
+                            freqList.Add(freqList.Median());
+                            entryList.Add(entryList.Median());
+                            powerList.Add(powerList.Median());
+                        }
+
                         int max = 0;
                         int min = 0;
 
@@ -243,49 +265,93 @@ namespace Train_DUT
                             break;
                         }
 
-                        Console.WriteLine("max");
-
-                       /* double utilSum = 0;
-                        double idleSum = 0;
-                        double freqSum = 0;
-                        double entrySum = 0;
-
-                        for (int i = 0; i < 7; i++)
+                        compare.Clear();
+                      
+                        if (min < 0)
                         {
-                            if (i == (max-1) || i == (min-1)) continue;
-
-                           utilSum += utilList.ElementAt(i);
-                           idleSum += idleList.ElementAt(i);
-                           freqSum += freqList.ElementAt(i);
-                           entrySum += entryList.ElementAt(i); 
-
-                          
+                            min = 0;
+                        }
+                        else if (min >= utilList.Count)
+                        {
+                            min = utilList.Count - 1;
                         }
 
-                        double avgUtil = utilSum / 5.0f;
-                        double avgIdle = idleSum / 5.0f;
-                        double avgFreq = freqSum / 5.0f;
-                        double avgEntry = entrySum / 5.0f;
+                        if (max < 0)
+                        {
+                            max = 0;
+                        }
+                        else if (max >= utilList.Count)
+                        {
+                            max = utilList.Count - 1;
+                        }
 
-                        Console.WriteLine("Average u=" + avgUtil + " f=" + avgFreq + " it=" + avgIdle + " ie=" + avgEntry); */
+                        if (min < max)
+                        {
+                            utilList.RemoveAt(max);
+                            idleList.RemoveAt(max);
+                            freqList.RemoveAt(max);
+                            entryList.RemoveAt(max);
+                            powerList.RemoveAt(max);
 
-                    
-                        utilList.RemoveAt(min);
-                        idleList.RemoveAt(min);
-                        freqList.RemoveAt(min);
-                        entryList.RemoveAt(min);
-                        powerList.RemoveAt(min);
+                            utilList.RemoveAt(min);
+                            idleList.RemoveAt(min);
+                            freqList.RemoveAt(min);
+                            entryList.RemoveAt(min);
+                            powerList.RemoveAt(min);
+                        }
+                        else
+                        {
+                            utilList.RemoveAt(min);
+                            idleList.RemoveAt(min);
+                            freqList.RemoveAt(min);
+                            entryList.RemoveAt(min);
+                            powerList.RemoveAt(min);
 
-                        --max;
-                        
-                        utilList.RemoveAt(max);
-                        idleList.RemoveAt(max);
-                        freqList.RemoveAt(max);
-                        entryList.RemoveAt(max);
-                        powerList.RemoveAt(max);
+                            utilList.RemoveAt(max);
+                            idleList.RemoveAt(max);
+                            freqList.RemoveAt(max);
+                            entryList.RemoveAt(max);
+                            powerList.RemoveAt(max);
+                        }
 
-                        Console.WriteLine("util=" + utilList.Median() + " freq=" + freqList.Median() + " idle_time=" + idleList.Median() + " idle_entry=" + entryList.Median() + " power="+powerList.Median());
+                        string output = "test_idle="+idles[d]+" freq=" + freqList.Median() + " util=" + utilList.Median() + " idle_time=" + idleList.Median() + " idle_entry=" + entryList.Median() + " power=" + powerList.Median();
 
+                        ArrayList rank = new ArrayList();
+                        rank.Add(0);
+                        rank.Add(1);
+                        rank.Add(2);
+                        rank.Add(3);
+                        rank.Add(4);
+
+                        List<int> generated = new List<int>();
+                        while (rank.Count != 0)
+                        {
+                            Random ran = new Random();
+                            int data =  ran.Next(0, rank.Count-1);
+                            generated.Add((int)rank[data]);
+                            rank.RemoveAt(data);
+                        }
+
+                        for (int i = 0; i < generated.Count; i++)
+                        {
+                            double freq = freqList[i];
+                            double util = utilList[i];
+                            double idleTime = idleList[i];
+                            double idleEntry = entryList[i];
+                            double power = powerList[i];
+
+                            //i<2 for train data
+                            if (i < 2)
+                            {
+                               
+                                trainSet.Add(freq + " " + util + " " + idleTime + " " + idleEntry + " " + power);
+                            }
+                            else
+                            {
+                                testSet.Add(freq + " " + util + " " + idleTime + " " + idleEntry + " " + power);
+                            }
+                        }
+                     
                         utilList.Clear();
                         idleList.Clear();
                         freqList.Clear();
@@ -294,6 +360,16 @@ namespace Train_DUT
                     }
                 }
             }
+
+            string[] trainData = (string[])trainSet.ToArray(typeof(string));
+            File.WriteAllLines(samplePath + @"\output\trainSet_1GHZ.txt", trainData);
+
+            string[] testData = (string[])testSet.ToArray(typeof(string));
+            File.WriteAllLines(samplePath + @"\output\testSet_1GHZ.txt", testData);
+
+            string[] resultNotFoundStr = (string[])resultNotFound.ToArray(typeof(string));
+            File.WriteAllLines(samplePath + @"\output\resultNotFound_1GHZ.txt", resultNotFoundStr);
+            
         }
     }
 }
