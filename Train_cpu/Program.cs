@@ -14,9 +14,8 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 6; // 1=train, 2=evaluate, 3=screen, 4 = gps
-
-
+            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            
             //Train
             if (mode == 1)
             {
@@ -26,7 +25,6 @@ namespace Train_DUT
 
             else if (mode == 2)
             {
-
 
             }
 
@@ -48,11 +46,14 @@ namespace Train_DUT
             else if (mode == 6)
             {
                 //Tool.powerPartition(Config.rootPath+@"\power", 30, 264);
-
                 string[] channel = Config.rootPath.Split('_');
                 new evalWiFi().execute2(channel[1]);
             }
 
+            else if (mode == 7)
+            {
+                new evalGPU().Measure();
+            }
             /*
             string[] files = Directory.GetFileSystemEntries(@"D:\SemiOnline\Experiment\Nexus\CPU_idle");
 
