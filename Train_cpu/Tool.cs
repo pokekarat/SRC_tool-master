@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Parse;
+using System.Collections;
 namespace Train_DUT
 {
     class Tool
@@ -11,11 +12,10 @@ namespace Train_DUT
         static double powerSum = 0;
         static double powerAvg = 0;
         static double powerCnt = 0;
-        static double powerIndex = 0;
 
         public static double powerParse(string folder, int beginIndex)
         {
-            string input = folder;
+            string input = folder + @"\power.pt4";
 
             FileStream pt4Stream = File.Open(
                                                  input,
@@ -60,7 +60,7 @@ namespace Train_DUT
 
         public static double[] powerParseArr(string folder, int beginIndex, int avgDuration)
         {
-            string input = folder;
+            string input = folder + @"\power.pt4";
 
             FileStream pt4Stream = File.Open(
                                                  input,
@@ -109,6 +109,43 @@ namespace Train_DUT
             }
 
             return results;
+        }
+
+        public static void powerPartition(string folder,int begin, int parSize)
+        {
+            double[] powerValues = Tool.powerParseArr(folder, 0, 5000);
+            
+            string[] toSave = new string[parSize];
+
+            int dataSize = powerValues.Length;
+
+            int numFile = 1;
+
+            while(begin<dataSize && numFile <=7)
+            {
+                
+                int partSize = begin + parSize;
+
+                for (int j = begin; j < partSize; j++)
+                {
+                    toSave[j - begin] = powerValues[j].ToString();
+                }
+
+                if (!Directory.Exists(Config.rootPath + @"\power\output"))
+                {
+                    Directory.CreateDirectory(Config.rootPath + @"\power\output");
+                }
+
+                //save
+                File.WriteAllLines(Config.rootPath + @"\power\output\power_" + numFile + @".txt", toSave);
+
+                for (int m = 0; m < toSave.Length; m++)
+                    toSave[m] = "";
+
+                begin = partSize;
+
+                numFile++;
+            }
         }
     }
 }
