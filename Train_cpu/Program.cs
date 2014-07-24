@@ -14,7 +14,7 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 4; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 3; // 1=train, 2=evaluate, 3=screen, 4 = gps
             //Train
             if (mode == 1)
             {
@@ -24,8 +24,6 @@ namespace Train_DUT
 
             if (mode == 2)
             {
-
-
             }
 
             if (mode == 3)
@@ -62,8 +60,8 @@ namespace Train_DUT
             }
             */
 
-           // Console.WriteLine("Finish.");
-           // Console.ReadKey();
+            Console.WriteLine("Finish.");
+            Console.ReadKey();
         }
     }
 }
