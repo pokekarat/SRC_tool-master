@@ -1,0 +1,32 @@
+﻿Merge remote-tracking branch 'origin/master'
+
+Conflicts:
+	Train_cpu/Program.cs
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please remove the file
+#	.git/MERGE_HEAD
+# and try again.
+
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch and 'origin/master' have diverged,
+# and have 1 and 3 different commits each, respectively.
+#   (use "git pull" to merge the remote branch into yours)
+#
+# All conflicts fixed but you are still merging.
+#   (use "git commit" to conclude merge)
+#
+# Changes to be committed:
+#
+#	new file:   Train_DUT.sln
+#	new file:   Train_cpu/Config.cs
+#	modified:   Train_cpu/Program.cs
+#	modified:   Train_cpu/Tool.cs
+#	modified:   Train_cpu/Train_DUT.csproj
+#	new file:   Train_cpu/evalGPU.cs
+#	new file:   Train_cpu/evalWiFi.cs
+#
+
