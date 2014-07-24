@@ -17,20 +17,24 @@ namespace Train_DUT
 
         public void Measure( )
         {
-            int numTest = 2;
+            int numTest = 7;
 
-            for (int i = 1; i <= numTest; i++)
+            for (int i = 3; i <= numTest; i++)
             {
                 Config.callProcess("./data/local/tmp/OGLES2PVRScopeExample "+i+" &");
 
-                Config.callPowerMeter(savePath + @"power"+i+".pt4",200);
+                Config.callPowerMeter(savePath + @"\power"+i+".pt4",190);
 
                 Thread.Sleep(10000);
 
-                Config.pullFile("data/local/tmp/stat/sample" + i + ".txt", savePath);
+                //Config.pullFile("data/local/tmp/stat/sample" + i + ".txt", savePath);
 
-                Thread.Sleep(10000);
+                //Thread.Sleep(10000);
             }
+
+            Config.pullFile("data/local/tmp/stat/", savePath);
+
+            Thread.Sleep(10000);
         }
 
         public void Evaluate( )

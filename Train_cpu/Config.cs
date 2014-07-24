@@ -44,13 +44,18 @@ namespace Train_DUT
         public static void pullFile(string phonePath, string hostPath)
         {
             string command = adbPath + "adb pull " + phonePath +" "+ hostPath;
-            Console.WriteLine(command+"\n");
+            
+            Console.WriteLine("Start pull file " + command+"\n");
+            
             ProcessStartInfo pullInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
             pullInfo.CreateNoWindow = true;
             pullInfo.UseShellExecute = false;
             pullInfo.RedirectStandardError = true;
             pullInfo.RedirectStandardOutput = true;
             Process pullProc = Process.Start(pullInfo);
+            
+
+            Console.WriteLine("Finish pull file");
         }
 
         public static void runAndKillPowerMeter()
