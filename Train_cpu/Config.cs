@@ -150,6 +150,69 @@ namespace Train_DUT
             Thread.Sleep(chargeCap * 30 * 1000); //0.5 min per % 
 
             Console.WriteLine("Finish charging");
-        }  
+        }
+
+        static double prev_total = 0;
+        static double prev_idle = 0;
+
+        public static double parseCPU(string cpuData)
+        {
+
+           
+            double total = 0;
+
+            string[] cpuElements = cpuData.Split(' ');
+
+            for (int i = 1; i < cpuElements.Length; i++)
+            {
+                total += Double.Parse(cpuElements[i]);
+            }
+
+            double idle = Double.Parse(cpuElements[4]);
+
+            double diff_idle = idle - prev_idle;
+            double diff_total = total - prev_total;
+            double diff_util = (1000 * (diff_total - diff_idle) / diff_total + 5) / 10;
+
+            prev_total = total;
+            prev_idle = idle;
+
+            return diff_util;
+        }
+
+        public static double estCpuPower(double util, double freq, double idleTime, double idleEntry)
+        {
+            double cpuPower = 0;
+
+            if (freq == 200000)
+            {
+                cpuPower = -0.126 * (idleTime / idleEntry) + (0.723 * util) + 389.239;
+            }
+            else if (freq == 400000)
+            {
+                cpuPower = -0.237 * (idleTime / idleEntry) + (1.602 * util) + 427.271;
+            }
+            else if (freq == 800000)
+            {
+                cpuPower = -0.743 * (idleTime / idleEntry) + (4.094 * util) + 444.281;
+            }
+            else if (freq == 1000000)
+            {
+                cpuPower = -1.131 * (idleTime / idleEntry) + (6.047 * util) + 468.957;
+            }
+            else if (freq == 100000)
+            {
+                cpuPower = (0.2189 * util) + 333.44;
+            }
+            
+
+            return cpuPower;
+        }
+
+        public static double estDisplayPower(double bright)
+        {
+            return (2.317 * bright) + 0.936;
+        }
+		    
     }
 }

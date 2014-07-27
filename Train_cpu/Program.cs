@@ -55,7 +55,9 @@ namespace Train_DUT
             else if (mode == 7)
             {
                evalGPU eg = new evalGPU();
-               eg.Measure();
+               //eg.Measure();
+
+               eg.Evaluate();
             }
             /*
             string[] files = Directory.GetFileSystemEntries(@"D:\SemiOnline\Experiment\Nexus\CPU_idle");
