@@ -10,7 +10,7 @@ namespace Train_DUT
 {
     public class evalGPU
     {
-        string savePath = @"G:\SemiOnline\Experiment\Nexus\GPU";
+        string savePath = @"G:\SemiOnline\Experiment\Nexus\Real_Test\app2";
 
         public evalGPU()
         {
@@ -18,93 +18,30 @@ namespace Train_DUT
             {
                 Directory.CreateDirectory(savePath);
             }
-
-           
-        }
-
-        public void Measure( )
-        {
-            Config.callProcess("chmod 777 /sys/class/backlight/s5p_bl/brightness");
-
-            Thread.Sleep(5000);
-
-            int numTest = 1;
-
-            for (int i = 1; i <= numTest; i++)
-            {
-                Config.callProcess("./data/local/tmp/OGLES2PVRScopeExample "+i+" &");
-
-                Config.callPowerMeter(savePath + @"\power"+i+".pt4",140);
-
-                Thread.Sleep(10000);
-
-                //Config.pullFile("data/local/tmp/stat/sample" + i + ".txt", savePath);
-
-                //Thread.Sleep(10000);
-            }
-
-            Thread.Sleep(30000);
-
-            Config.pullFile("data/local/tmp/stat/", savePath);
-
-            Thread.Sleep(5000);
         }
 
         public void Evaluate()
         {
             
             List<List<string>> lists = new List<List<string>>();
-            List<string> list = null;
+            
             ArrayList saveData = new ArrayList();
             ArrayList saveGPU = new ArrayList();
             
             for (int i = 1; i <= 1; i++)
             {
-
-
+                
                 string[] datas = File.ReadAllLines(savePath + @"\sample" + i + ".txt");
                 double[] powers = Tool.powerParseArr(i, savePath, 0, 5000);
 
-                for (int j = 0; j < datas.Length; j++)
-                {
-
-                    if (datas[j] == "")
-                    {
-
-                        if (list != null)
-                        {
-                            lists.Add(list);
-                        }
-
-                        list = new List<string>();
-                        continue;
-
-                    }
-
-                    string[] dats = datas[j].Split('=');
-
-                    if (dats[0].Contains("cpu"))
-                    {
-                        string[] str = dats[0].Split('_');
-                        list.Add(str[0]);
-                    }
-
-                    Console.WriteLine(j);
-                    list.Add(dats[1]);
-
-                }
-
-                lists.Add(list);
-                list = null;
-
-                Console.WriteLine("Process each line");
+                lists = Config.processData(datas);
 
                 int row = lists.Count;
                 int col = lists[0].Count;
                 string values = "";
                 string values2 = "";
 
-                saveData.Add("util freq idle_time idle_usage bright ftime fps g3d_core gta_core g3d_time gta_time ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf power");
+                saveData.Add("util freq idle_time idle_usage bright tx rx ftime fps g3d_core gta_core g3d_time gta_time ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf power");
                 saveGPU.Add("ftime fps g3d_core gta_core g3d_time gta_time ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf power");
                 
                 for (int r = 4; r < row; r++)
@@ -132,8 +69,6 @@ namespace Train_DUT
                         if (c > 4)
                             values2 += value + " ";
                     }
-
-                    if (ec == 0) ec = 1;
 
                     double estModel = Config.estCpuPower(util, freq, tc, ec) + Config.estDisplayPower(bright);
 

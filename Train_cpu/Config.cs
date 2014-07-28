@@ -186,19 +186,19 @@ namespace Train_DUT
 
             if (freq == 200000)
             {
-                cpuPower = -0.126 * (idleTime / idleEntry) + (0.723 * util) + 389.239;
+                cpuPower = -0.126 * (idleTime / (idleEntry + 0.01)) + (0.723 * util) + 389.239;
             }
             else if (freq == 400000)
             {
-                cpuPower = -0.237 * (idleTime / idleEntry) + (1.602 * util) + 427.271;
+                cpuPower = -0.237 * (idleTime / (idleEntry + 0.01)) + (1.602 * util) + 427.271;
             }
             else if (freq == 800000)
             {
-                cpuPower = -0.743 * (idleTime / idleEntry) + (4.094 * util) + 444.281;
+                cpuPower = -0.743 * (idleTime / (idleEntry + 0.01)) + (4.094 * util) + 444.281;
             }
             else if (freq == 1000000)
             {
-                cpuPower = -1.131 * (idleTime / idleEntry) + (6.047 * util) + 468.957;
+                cpuPower = -1.131 * (idleTime / (idleEntry + 0.01)) + (6.047 * util) + 468.957;
             }
             else if (freq == 100000)
             {
@@ -213,6 +213,119 @@ namespace Train_DUT
         {
             return (2.317 * bright) + 0.936;
         }
-		    
+
+        public static double estGpuPower(double fps, double t3d_core, double txt_u_l, double usse_ld_ver)
+        {
+            return (-6.8 * fps) + (-13.4 * t3d_core) + (312.8 * txt_u_l) + (7548.4 * usse_ld_ver) + 71.7;
+        }
+
+        public static List<List<string>> processData(string[] d) {
+
+             string[] datas = d;
+            
+             List<List<string>> lists = new List<List<string>>();
+             List<string> list = null;
+
+             for (int j = 0; j < datas.Length; j++)
+             {
+                if (datas[j] == "") continue;
+
+                if (datas[j].Contains("loop"))
+                {
+                    if (list != null)
+                        lists.Add(list);
+
+                    list = new List<string>();
+                    continue;
+                }
+
+                if (!datas[j].Contains("="))
+                {
+                    continue;
+                }
+
+                string[] dats = datas[j].Split('=');
+                list.Add(dats[1]);
+             }
+
+            //Add last list
+            lists.Add(list);
+            list = null;
+            return lists;
+         }
+
+        public static double MAPE(List<double> measure, List<double> model)
+        {
+            double result = 0;
+
+            double acc = 0;
+            int dataSize = measure.Count;
+            for (int i = 0; i < dataSize-1; i++)
+            {
+                if (measure[i] == 0) measure[i] = 0.1;
+
+               double sum = Math.Abs(measure[i] - model[i])/measure[i];
+
+               if (sum > 1) continue;
+
+               //Console.WriteLine("sum = " + sum);
+               acc += sum;
+            }
+
+            result = (acc / dataSize) * 100;
+
+            return result;
+
+        }
+
+        public static void Run()
+        {
+            for (int i = 1; i <= 100; i++)
+            {
+                Console.WriteLine(i);
+                Thread.Sleep(1000);
+            }
+        }
+
+        public static void measure()
+        {
+            string savePath = @"G:\SemiOnline\Experiment\Nexus\Real_Test\app4";
+
+            Config.callProcess("rm /data/local/tmp/stat/*.txt");
+            Config.callProcess("chmod 777 /sys/class/backlight/s5p_bl/brightness");
+
+            Thread.Sleep(5000);
+
+            int numTest = 7;
+
+            int time = 180;
+
+            for (int i = 1; i <= numTest; i++)
+            {
+
+                //if (i == 1)
+                {
+                    new Thread(new ThreadStart(Run)).Start();
+                }
+
+                Config.callProcess("./data/local/tmp/OGLES2PVRScopeExample " + i + " " + time + " &");
+
+                Config.callPowerMeter(savePath + @"\power" + i + ".pt4", time);
+
+                Thread.Sleep(30000);
+
+                //Config.pullFile("data/local/tmp/stat/sample" + i + ".txt", savePath);
+
+                //Thread.Sleep(10000);
+            }
+
+            Thread.Sleep(30000);
+
+            Config.pullFile("data/local/tmp/stat/", savePath);
+
+            Thread.Sleep(5000);
+        }
+
+        
     }
 }

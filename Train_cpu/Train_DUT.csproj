@@ -50,6 +50,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadPT4.cs" />
+    <Compile Include="testApp.cs" />
     <Compile Include="Tool.cs" />
     <Compile Include="Train_CPU.cs" />
     <Compile Include="evalCPU.cs" />
