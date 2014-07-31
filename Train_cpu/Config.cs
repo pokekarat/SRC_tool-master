@@ -278,9 +278,11 @@ namespace Train_DUT
 
         }
 
+        static int time = 140;
+
         public static void Run()
         {
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= time; i++)
             {
                 Console.WriteLine(i);
                 Thread.Sleep(1000);
@@ -289,7 +291,7 @@ namespace Train_DUT
 
         public static void measure()
         {
-            string savePath = @"G:\SemiOnline\Experiment\Nexus\Real_Test\app4";
+            string savePath = @"G:\SemiOnline\Experiment\Nexus\Real_Test\app7";
 
             Config.callProcess("rm /data/local/tmp/stat/*.txt");
             Config.callProcess("chmod 777 /sys/class/backlight/s5p_bl/brightness");
@@ -297,8 +299,6 @@ namespace Train_DUT
             Thread.Sleep(5000);
 
             int numTest = 7;
-
-            int time = 180;
 
             for (int i = 1; i <= numTest; i++)
             {
@@ -318,6 +318,7 @@ namespace Train_DUT
 
                 //Thread.Sleep(10000);
             }
+
 
             Thread.Sleep(30000);
 
