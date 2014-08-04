@@ -18,7 +18,8 @@ namespace Train_DUT
 
             if (mode == 9)
             {
-                Config.measure();
+                //Config.measure();
+                Config.trainS4cpu();
             }
 
             else if (mode == 8)
@@ -91,6 +92,7 @@ namespace Train_DUT
             */
 
             Console.WriteLine("Finish.");
+            System.Media.SystemSounds.Asterisk.Play();
             Console.ReadKey();
         }
     }

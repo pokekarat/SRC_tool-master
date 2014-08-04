@@ -13,6 +13,7 @@ namespace Train_DUT
         public static string rootPath = @"D:\SemiOnline\Experiment\Nexus\WiFi\channel_54";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static string powerMeterPath = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
+        public static int DUT = 1; //0=nexus, 1=S4
                                              
         
         public static double NEXUS_CPU_POWER_MODEL(double freq, double cpu)
@@ -75,7 +76,7 @@ namespace Train_DUT
         public static void callProcess(string command)
         {
            
-            command = adbPath + "adb shell \"su -c '" + command + "' \"";
+            command = adbPath + "adb shell \"su -c '" + command + "'\"";
             Console.WriteLine("Start " + command+"\n");
 
             ProcessStartInfo pInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
@@ -84,6 +85,53 @@ namespace Train_DUT
             pInfo.RedirectStandardError = true;
             pInfo.RedirectStandardOutput = true;
             Process process = Process.Start(pInfo);
+            StreamReader sOut = process.StandardOutput;
+            string result = sOut.ReadLine();            
+            Thread.Sleep(3000);
+        }
+
+        public static void callProcess2(string command)
+        {
+
+            command = adbPath + "adb " + command;
+            Console.WriteLine("Start " + command + "\n");
+
+            ProcessStartInfo pInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+            pInfo.CreateNoWindow = true;
+            pInfo.UseShellExecute = false;
+            pInfo.RedirectStandardError = true;
+            pInfo.RedirectStandardOutput = true;
+            Process process = Process.Start(pInfo);
+            StreamReader sOut = process.StandardOutput;
+            string result = sOut.ReadLine();
+            
+            Console.WriteLine("Output = " + result);
+
+            /*try
+            {
+               
+              StreamReader sOut = process.StandardOutput;
+               if (!process.HasExited)
+                   process.Kill();
+               string result = sOut.ReadToEnd();
+
+
+               if (!process.HasExited)
+                   process.Kill();
+
+               int exitCode = process.ExitCode;
+               Console.WriteLine("Process output = " + exitCode);
+                * 
+                * 
+               
+
+           }
+           catch (Exception ex)
+           {
+               Console.WriteLine(ex.Message);
+           } */
+            
+           Thread.Sleep(3000);
         }
 
         public static Boolean isProcessRunning(string name)
@@ -278,7 +326,7 @@ namespace Train_DUT
 
         }
 
-        static int time = 140;
+        static int time = 30;
 
         public static void Run()
         {
@@ -291,28 +339,38 @@ namespace Train_DUT
 
         public static void measure()
         {
-            string savePath = @"G:\SemiOnline\Experiment\Nexus\Real_Test\app7";
+            string savePath = @"G:\SemiOnline\Experiment\S4\GPU";
 
             Config.callProcess("rm /data/local/tmp/stat/*.txt");
-            Config.callProcess("chmod 777 /sys/class/backlight/s5p_bl/brightness");
+
+            if (Config.DUT == 0)
+                Config.callProcess("chmod 777 /sys/class/backlight/s5p_bl/brightness");
+            else
+                Config.callProcess("chmod 777 /sys/class/backlight/panel/brightness");
+
 
             Thread.Sleep(5000);
 
-            int numTest = 7;
+            int numTest = 1;
 
             for (int i = 1; i <= numTest; i++)
             {
 
                 //if (i == 1)
-                {
+                //{
                     new Thread(new ThreadStart(Run)).Start();
-                }
+                //}
 
-                Config.callProcess("./data/local/tmp/OGLES2PVRScopeExample " + i + " " + time + " &");
+                
+                if (Config.DUT == 0)
+                    Config.callProcess("./data/local/tmp/OGLES2PVRScopeExample " + i + " " + time + " &");
+
+                else
+                    Config.callProcess("./data/local/tmp/OGLES2PVRScopeExampleS4 " + i + " " + time + " &");
 
                 Config.callPowerMeter(savePath + @"\power" + i + ".pt4", time);
 
-                Thread.Sleep(30000);
+                Thread.Sleep(10000);
 
                 //Config.pullFile("data/local/tmp/stat/sample" + i + ".txt", savePath);
 
@@ -327,6 +385,220 @@ namespace Train_DUT
             Thread.Sleep(5000);
         }
 
+        static string onPath = "g:\\Semionline\\Experiment\\S4\\on.txt";
+        public static void checkConnection()
+        {
+            Config.callProcess2("pull data/local/tmp/on.txt g:\\Semionline\\Experiment\\S4");
+            //Config.callProcess("rm /data/local/tmp/stat/*.txt");
+            //Thread.Sleep(5000);
+
+            int count = 0;
+            //Check wheather on.txt is existing
+            while (!File.Exists(onPath))
+            {
+                Console.WriteLine("Error count = " + count);
+                Config.callProcess2("kill-server");
+                Config.callProcess2("start-server");
+                Config.callProcess2("pull data/local/tmp/on.txt g:\\Semionline\\Experiment\\S4");
+                ++count;
+
+                if (count >= 10)
+                {
+                    
+                    //SendMail("pokekarat@gmail.com", "pokekarat@gmail.com", "", "S4 is down", "S4 is down");
+                    Console.Beep(5000, 5000);
+                    Console.WriteLine("Have some problem");
+                    
+                }
+            }
+
+            File.Delete(onPath);
+
+        }
         
+        public static string SendMail(string toList, string from, string ccList, string subject, string body)
+        {
+
+            System.Net.Mail.MailMessage message = new System.Net.Mail.MailMessage();
+            System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient();
+            string msg = string.Empty;
+            try
+            {
+                System.Net.Mail.MailAddress fromAddress = new System.Net.Mail.MailAddress(from);
+                message.From = fromAddress;
+                message.To.Add(toList);
+                if (ccList != null && ccList != string.Empty)
+                    message.CC.Add(ccList);
+                message.Subject = subject;
+                message.IsBodyHtml = true;
+                message.Body = body;
+                // We use gmail as our smtp client
+                smtpClient.Host = "smtp.gmail.com";
+                smtpClient.Port = 587;
+                smtpClient.EnableSsl = true;
+                smtpClient.UseDefaultCredentials = true;
+                smtpClient.Credentials = new System.Net.NetworkCredential(
+                    "pokekarat", "MAY25199%");
+
+                smtpClient.Send(message);
+                msg = "Successful<BR>";
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+            }
+            return msg;
+        }
+
+        public static void trainS4cpu()
+        {
+
+            System.Media.SystemSounds.Asterisk.Play();
+            string savePath = @"G:\SemiOnline\Experiment\S4\CPU";
+            int numTest = 3;
+
+            // string[] freqs = { "250000", "350000", "450000", "500000", "550000", "600000", "800000", "900000", "1000000", "1100000", "1200000", "1300000", "1400000", "1500000", "1600000" };
+            string[] freqs = { "250000", "350000", "400000", "600000", "800000",  "1200000", "1400000", "1600000" };
+            int[] utils = { 25, 50, 75 };
+            int[] idleTimes = { 1, 20, 100, 500, 1000 };
+
+            int[] numCoreEnable = { 1 , 2, 3, 4 };
+
+            int index = 1;
+
+            for (int f = 0; f < freqs.Length; f++)
+            {
+                for (int u = 0; u < utils.Length; u++)
+                {
+                    for(int it=0; it<idleTimes.Length; it++)
+                    {
+                        for (int c = 0; c < numCoreEnable.Length; c++)
+                        {
+
+                            checkConnection();
+
+                            string freqActive = freqs[f];
+                            int utilActive = utils[u];
+                            int idleTime = idleTimes[it];
+                            int numCoreActive = numCoreEnable[c];
+
+                            //Set cores
+                            if (numCoreActive == 1)
+                            {  
+                                callProcess("echo 0 > /sys/devices/system/cpu/cpu1/online");
+                                callProcess("echo 0 > /sys/devices/system/cpu/cpu2/online");
+                                callProcess("echo 0 > /sys/devices/system/cpu/cpu3/online");
+                            }
+                            else if (numCoreActive == 2)
+                            {
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu1/online");
+                                callProcess("echo 0 > /sys/devices/system/cpu/cpu2/online");
+                                callProcess("echo 0 > /sys/devices/system/cpu/cpu3/online");
+                            }
+                            else if (numCoreActive == 3)
+                            {
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu1/online");
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu2/online");
+                                callProcess("echo 0 > /sys/devices/system/cpu/cpu3/online");
+                            }
+                            else if (numCoreActive == 4)
+                            {
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu1/online");
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu2/online");
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu3/online");
+                            }
+
+                            int y = (utils[u] * (idleTimes[it] * 1000)) / (101 - utils[u]);
+                            int x = (idleTimes[it] * 1000) + y;
+                         
+                            for (int nc = 1; nc <= numCoreActive; nc++)
+                            {
+
+                                callProcess("./data/local/tmp/strc "+x+" "+y+" &");
+
+                                /*if (nc == 3)
+                                {
+                                    callProcess("./data/local/tmp/strc 50000 48000 &");
+                                }
+                                else
+                                {
+                                    callProcess("./data/local/tmp/strc 50000 49500 &");
+                                }*/
+                            }
+                                
+                                
+                            
+
+                            //Set freq
+                            for (int nc = 0; nc < numCoreActive; nc++)
+                            {
+                                callProcess("echo " + freqActive + " > /sys/devices/system/cpu/cpu" + nc + "/cpufreq/scaling_min_freq");
+                                callProcess("echo " + freqActive + " > /sys/devices/system/cpu/cpu" + nc + "/cpufreq/scaling_max_freq");
+                            }
+
+                            string saveFolder = savePath; // +@"\test_f" + freqActive + "_u" + utilActive + "_c" + numCoreActive;
+                        
+                            if (!Directory.Exists(saveFolder))
+                                Directory.CreateDirectory(saveFolder);
+
+                            for (int i = 1; i <= numTest; i++)
+                            {
+
+                            
+                                new Thread(new ThreadStart(Run)).Start();
+                            
+                                Config.callProcess("./data/local/tmp/OGLES2PVRScopeExampleS4 " + index + " " + time + " &");
+
+                                Thread.Sleep(10000);
+
+                                Config.callPowerMeter(saveFolder + @"\t" + index + "_f" + freqActive + "_u" + utilActive + "_c" + numCoreActive + "_" + i + ".pt4", time);
+
+                                //Thread.Sleep(10000);
+
+                                //++index;
+
+                            }
+
+                       
+                            //We need to enable this otherwise the system is too busy to do another job.
+                            if (numCoreActive == 3)
+                            {
+                                callProcess("echo 1 > /sys/devices/system/cpu/cpu3/online");
+                            }
+
+                            Thread.Sleep(10000);
+
+                            /* callProcess("chmod 777 data/local/tmp/stat/*.txt");
+
+                             Thread.Sleep(20000);
+
+                             pullFile("data/local/tmp/stat/", saveFolder);
+
+                             Thread.Sleep(5000); 
+
+                             Config.callProcess("rm /data/local/tmp/stat/*.txt");
+
+                             Thread.Sleep(3000); */
+
+                            checkConnection();
+
+                            Config.callProcess("./data/local/tmp/busybox killall strc");
+
+                            Thread.Sleep(5000);
+
+                            Config.callProcess("chmod 777 data/local/tmp/stat/sample"+index+".txt");
+
+                            Thread.Sleep(5000);
+
+                            Config.callProcess2("pull data/local/tmp/stat/sample"+index+".txt g:\\Semionline\\Experiment\\S4\\CPU");
+
+                            Thread.Sleep(20000);
+                            ++index;
+                        }
+                    }
+                    //pullFile("data/local/tmp/stat/", savePath);
+                }
+            } 
+        }
     }
 }
