@@ -13,9 +13,9 @@ namespace Train_DUT
         static double powerAvg = 0;
         static double powerCnt = 0;
 
-        public static double powerParse(string folder, int beginIndex)
+        public static double powerParse(string file, int beginIndex, int avgDuration)
         {
-            string input = folder + @"\power.pt4";
+            string input = file;
 
             FileStream pt4Stream = File.Open(
                                                  input,
@@ -44,8 +44,10 @@ namespace Train_DUT
             pt4Reader.BaseStream.Position = PT4.sampleOffset;
             // process the samples sequentially, beginning to end
             PT4.Sample sample = new PT4.Sample();
-     
-            for (long sampleIndex = beginIndex; sampleIndex < sampleCount; sampleIndex++)
+
+            int startTime = beginIndex * avgDuration;
+
+            for (long sampleIndex = startTime; sampleIndex < sampleCount; sampleIndex++)
             {
                 PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
                 powerSum += (sample.mainCurrent * sample.mainVoltage);
@@ -113,9 +115,9 @@ namespace Train_DUT
             return results;
         }
 
-        public static double[] powerParseArr(string folder, int beginIndex, int avgDuration)
+        public static double[] powerParseArr(string pt4file, int beginIndex, int avgDuration)
         {
-            string input = folder + @"\power.pt4";
+            string input = pt4file;
 
             FileStream pt4Stream = File.Open(
                                                  input,
@@ -147,8 +149,8 @@ namespace Train_DUT
 
 
             double[] results = new double[sampleCount/avgDuration];
-           
-            for (long sampleIndex = beginIndex; sampleIndex < sampleCount; sampleIndex++)
+            int startTime = beginIndex * avgDuration;
+            for (long sampleIndex = startTime; sampleIndex < sampleCount; sampleIndex++)
             {
                 PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
                 powerSum += sample.mainCurrent * sample.mainVoltage;

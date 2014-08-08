@@ -14,7 +14,14 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 9; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
+
+
+            if (mode == 10)
+            {
+                Config.parseDisplayData();
+            }
+
 
             if (mode == 9)
             {
@@ -65,7 +72,7 @@ namespace Train_DUT
             {
                evalGPU eg = new evalGPU();
                
-               //eg.Evaluate();
+               eg.Evaluate2();
             }
             /*
             string[] files = Directory.GetFileSystemEntries(@"D:\SemiOnline\Experiment\Nexus\CPU_idle");
