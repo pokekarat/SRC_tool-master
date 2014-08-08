@@ -418,24 +418,48 @@ namespace Train_DUT
                     }
 
                     double avgU = (u0 + u1 + u2 + u3) / 4;
-                    double avgIts0 = c0its0 + c1its0 + c2its0 + c3its0;
+                    /*double avgIts0 = c0its0 + c1its0 + c2its0 + c3its0;
                     double avgIts1 = c0its1 + c1its1 + c2its1 + c3its1;
                     double avgIts2 = c0its2 + c1its2 + c2its2 + c3its2;
                     double avgIes0 = c0ies0 + c1ies0 + c2ies0 + c3ies0;
                     double avgIes1 = c0ies1 + c1ies1 + c2ies1 + c3ies1;
                     double avgIes2 = c0ies2 + c1ies2 + c2ies2 + c3ies2;
 
-                    double c0 = Config.CPU400MHzS4Power(avgU, avgIts0, avgIts1, avgIts2, avgIes0, avgIes1, avgIes2, f0);
-                    //double c1 = Config.CPU400MHzS4Power(u1, c1its0, c1its1, c1its2, c1ies0, c1ies1, c1ies2, f0);
-                    //double c2 = Config.CPU400MHzS4Power(u2, c2its0, c2its1, c2its2, c2ies0, c2ies1, c2ies2, f0);
-                    //double c3 = Config.CPU400MHzS4Power(u3, c3its0, c3its1, c3its2, c3ies0, c3ies1, c3ies2, f0);
 
-                    double estModel = c0; // +c1 + c2 + c3;
+                    double c0 = Config.CPU400MHzS4Power(avgU, avgIts0, avgIts1, avgIts2, avgIes0, avgIes1, avgIes2, f0); */
+                    /*double c0 = Config.CPU400MHzS4Power(u0, c1its0, c1its1, c1its2, c1ies0, c1ies1, c1ies2, f0);
+                    double c1 = Config.CPU400MHzS4Power(u1, c1its0, c1its1, c1its2, c1ies0, c1ies1, c1ies2, f0);
+                    double c2 = Config.CPU400MHzS4Power(u2, c2its0, c2its1, c2its2, c2ies0, c2ies1, c2ies2, f0);
+                    double c3 = Config.CPU400MHzS4Power(u3, c3its0, c3its1, c3its2, c3ies0, c3ies1, c3ies2, f0);
+                    double estModel = c0 +c1 + c2 + c3;
                     Console.WriteLine(estModel);
+                    */
 
+                    double estModel = 0;
+
+                    if (f0 == 1600000)
+                    {
+                        estModel = 28.83 * avgU + 1028;
+                    }
+                    else if (f0 == 1200000)
+                    {
+                        estModel = 16.88 * avgU + 903.5;
+                    }
+                    else if (f0 == 900000)
+                    {
+                        estModel = 7.91 * avgU + 810;
+                    }
+                    else if (f0 == 600000)
+                    {
+                        estModel = 2.899 * avgU + 750;
+                    }
+
+                    
                     double measurePower = powers[r];
 
-                    double estGPUpower = measurePower - estModel;
+                    double estGPUpower = measurePower - estModel - 325; // 325 is the estimated of screen without RGB
+
+                    if (estGPUpower < 0) estGPUpower = 0;
 
                     
                     for (int x = 0; x < eles.Length; x++)

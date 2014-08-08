@@ -734,17 +734,23 @@ namespace Train_DUT
 
             double constant = 0;
 
+            
             /*if (f0 == 400)
                 constant = 716.07;*/
             /*else if (f0 == 600)
                 constant = 0;
             else*/
 
-            result = 38.21 * ((i0 / idleSum) * i0 / (e0)) +
-                     31.56 * ((i1 / idleSum) * i1 / (e1)) +
-                     0.76 * ((i2 / idleSum) * i2 / (e2)) +
-                     0.38 * u +
-                     716.07;
+            if (f0 == 400)
+            {
+
+                result = 38.21 * ((i0 / idleSum) * i0 / (e0)) +
+                         31.56 * ((i1 / idleSum) * i1 / (e1)) +
+                         0.76 * ((i2 / idleSum) * i2 / (e2)) +
+                         0.38 * u +
+                         716.07;
+            }
+            
 
             return result;
         }
