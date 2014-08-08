@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using WPFMediaKit;
+using WPFMediaKit.DirectShow.MediaPlayers;
 
 namespace Train_DUT
 {
@@ -108,6 +110,16 @@ namespace Train_DUT
                 saveGPU.Clear();
 
             }
+        }
+
+        public static void extractVideoFrame()
+        {
+            /*MediaDetector detector = new MediaDetector();
+            detector.LoadMedia(@"G:\Semionline\Experiment\S4\GPU\1\SCR_20140801_133651.mp4");
+            var src = detector.GetImage(new TimeSpan(TimeSpan.TicksPerSecond));*/
+
+           
+           
         }
 
 

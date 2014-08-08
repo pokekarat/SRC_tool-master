@@ -14,8 +14,12 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 11; // 1=train, 2=evaluate, 3=screen, 4 = gps
 
+            if (mode == 11)
+            {
+                evalGPU.extractVideoFrame();
+            }
 
             if (mode == 10)
             {
