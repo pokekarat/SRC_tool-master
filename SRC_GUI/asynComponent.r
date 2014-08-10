@@ -24,13 +24,14 @@ require(apcluster)
 require(Rcpp)
 #print(commandArgs(TRUE)[1])
 
-path   <- commandArgs(TRUE)[1] #"C:\\Users\\USER\\Documents\\GitHub\\SRC_tool\\"
-input  <- paste(path, "sample.txt", sep="")
+#"C:\\Users\\USER\\Documents\\GitHub\\SRC_tool\\"
+path   <- "d:\\research\\" #commandArgs(TRUE)[1] 
+input  <- paste(path, "gpu_power_1.txt", sep="")
 output <-  paste(path, "modifyPower.txt", sep="")
 async  <-  paste(path, "asyncTable.txt", sep="")
 
 # with power 
-measure1 <- read.table(input,sep="",header=T)
+measure1 <- read.table(input,sep=" ",header=T)
 similar1 <- expSimMat(measure1, r=2)
 cluster1 <- apcluster(similar1, q=0.2)
 measureSync <- measure1 
@@ -177,6 +178,10 @@ for(i in list2)
 	#cat("finish")
 	#cat("\n")
 }
+x <- length(measure1[,1])
+plot(x,measure1$power,type="l",col="red")
+lines(x,measureSync$power,col="blue")
+lines(x,asyncTable[,2],col="green")
 
 write.table(measureSync, file = output, sep = " ", row.names=FALSE)
 write.table(asyncTable, file = async, sep = " ", row.names=FALSE, col.names=c("Time","Power"))
