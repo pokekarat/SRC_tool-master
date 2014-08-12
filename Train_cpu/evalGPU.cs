@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using WPFMediaKit;
-using WPFMediaKit.DirectShow.MediaPlayers;
 
 namespace Train_DUT
 {

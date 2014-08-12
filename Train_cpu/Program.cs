@@ -14,7 +14,7 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 4; // 1=train, 2=evaluate, 3=screen, 4 = gps
 
             if (mode == 11)
             {
@@ -57,7 +57,7 @@ namespace Train_DUT
 
             else if (mode == 4)
             {
-                new evalGPS().execute();
+                new evalGPS().execute2();
             }
 
             else if (mode == 5)

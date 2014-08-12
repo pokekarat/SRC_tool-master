@@ -9,11 +9,60 @@ namespace Train_DUT
 {
     public class evalGPS
     {
-        string samplePath = @"D:\SemiOnline\Experiment\Nexus\GPS\test_1";
+        string samplePath = @"D:\research\Data\test_2";
 
         public evalGPS()
         {
             
+        }
+
+        public void execute2()
+        {
+
+            string[] files = Directory.GetFiles(samplePath);
+
+            double[] powers = Tool.powerParseArr(files[8], 0, 5000);
+           
+            for (int j = 0; j < powers.Length; j++)
+            {
+                if (powers[j] <= 600 || powers[j] >= 950)
+                {
+                    powers[j] = 0;
+                   
+                }
+            }
+
+            double[] power4 = new double[85];
+
+            for (int x = 530; x < (530+85); x++)
+            {
+                power4[x - 530] = powers[x]; 
+            }
+
+            string[] dataLines = File.ReadAllLines(samplePath + @"\gps_4.txt");
+
+
+            int count = 0;
+            string output = "";
+            List<string> dat = new List<string>();
+
+            for (int y = 1; y < dataLines.Length; y++)
+            {
+                string[] line = dataLines[y].Split('\t');
+
+                if (line[4] == "20")
+                {
+                    for (int z = 0; z < line.Length; z++)
+                    {
+                        output += line[z] + " ";
+                    }
+
+                    dat.Add(output);
+                }
+
+                output = "";
+            }
+
         }
 
         public void execute()
@@ -25,15 +74,27 @@ namespace Train_DUT
 
             for (int j = 0; j < powers.Length; j++)
             {
-                if (powers[j] > 1000)
+                if (powers[j] <= 600 || powers[j] >= 950)
                 {
-                    powers[j] = -1;
+                    powers[j] = 0;
                 }
             }
+
+            string[] powerStrs = new string[powers.Length];
+
+            for(int i=0; i<powerStrs.Length; i++)
+            {
+                powerStrs[i] = powers[i].ToString();
+            }
+
+            string[] dataLines = File.ReadAllLines(files[3]);
+
+            File.WriteAllLines(samplePath + @"\powerStr.txt", powerStrs);
 
             bool firstTime = true;
             
             ArrayList arr = new ArrayList();
+
             ArrayList arr2 = null;
 
             for (int k = 0; k < 1156; k++)
@@ -42,9 +103,7 @@ namespace Train_DUT
                 {
                     if (arr2 != null)
                     {
-
                         arr.Add(arr2.Clone());
-
                         arr2.Clear();
                         arr2 = null;
                         firstTime = true;
