@@ -210,7 +210,7 @@ namespace Train_DUT
             
             string[] files = Directory.GetFiles(rootPath);
             
-            double[] powers = Tool.powerParseArr(rootPath + @"\power", 0, 5000);
+            double[] powers = Tool.powerParseArr(rootPath + @"\power", 0, files.Length, 5000);
 
             string[] toSavePower = new string[powers.Length];
             for(int i=0; i<powers.Length; i++)

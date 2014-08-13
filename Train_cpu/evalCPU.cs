@@ -411,7 +411,7 @@ namespace Train_DUT
 
                         //POWER
 
-                        double[] powers = Tool.powerParseArr(powerFiles[1], 0, 5000);
+                        double[] powers = Tool.powerParseArr(powerFiles[1], 0, powerFiles.Length, 5000);
 
                         ArrayList usePower = new ArrayList();
                         ArrayList unUsePower = new ArrayList();

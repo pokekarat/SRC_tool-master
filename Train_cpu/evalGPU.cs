@@ -133,9 +133,23 @@ namespace Train_DUT
             {
 
                 string[] datas = File.ReadAllLines(savePath + @"\sample" + i + ".txt");
+                string[] powerPixels = File.ReadAllLines(savePath + @"\screenPower.txt");
                 double[] powers = Tool.powerParseArr(i, savePath, 0, 5000);
 
                 lists = Config.processData(datas);
+
+                //create array data
+                string lastLoopIndex = lists[lists.Count - 1][0];
+                int sampleSize = Int32.Parse(lastLoopIndex.Split('_')[1])+1;
+                string[] dataSystem = new string[sampleSize];
+                string[] dataGPU = new string[sampleSize];
+
+                for (int d = 0; d < sampleSize; d++)
+                {
+                    dataSystem[d] = "0";
+                    dataGPU[d] = "0";
+                }
+
 
                 int row = lists.Count;
                 int col = lists[0].Count;
@@ -146,9 +160,17 @@ namespace Train_DUT
                 saveData.Add("u0 u1 u2 u3 f0 f1 f2 f3 c0its0 c0its1 c0its2 c1its0 c1its1 c1its2 c2its0 c2its1 c2its2 c3its0 c3its1 c3its2 c0ies0 c0ies1 c0ies2 c1ies0 c1ies1 c1ies2 c2ies0 c2ies1 c2ies2 c3ies0 c3ies1 c3ies2 m br " + gpuVars);
                 saveGPU.Add(gpuVars);
 
-                for (int r = 1; r < row; r++)
+                dataSystem[0] = "u0 u1 u2 u3 f0 f1 f2 f3 c0its0 c0its1 c0its2 c1its0 c1its1 c1its2 c2its0 c2its1 c2its2 c3its0 c3its1 c3its2 c0ies0 c0ies1 c0ies2 c1ies0 c1ies1 c1ies2 c2ies0 c2ies1 c2ies2 c3ies0 c3ies1 c3ies2 m br " + gpuVars;
+                dataGPU[0] = gpuVars;
+
+                for (int r = 0; r < row; r++)
                 {
                     List<string> curData = lists[r];
+
+                    string loopStr = curData[0];
+                    curData.RemoveAt(0);
+
+                    int loopIndx = Int32.Parse(loopStr.Split('_')[1]);
 
                     double[] eles = new double[53];
 
@@ -156,27 +178,15 @@ namespace Train_DUT
                     double f0 = 0;double f1 = 0;double f2 = 0; double f3 = 0;
 
                     ///
-
-                    double c0its0 = 0;double c0its1 = 0;double c0its2 = 0;
-
-                    double c1its0 = 0;  double c1its1 = 0;                    double c1its2 = 0;
-
-                    double c2its0 = 0;                    double c2its1 = 0;                    double c2its2 = 0;
-
-                    double c3its0 = 0;                    double c3its1 = 0;                    double c3its2 = 0;
+                    double c0its0 = 0; double c0its1 = 0; double c0its2 = 0; double c1its0 = 0; double c1its1 = 0; double c1its2 = 0;
+                    double c2its0 = 0; double c2its1 = 0; double c2its2 = 0; double c3its0 = 0; double c3its1 = 0; double c3its2 = 0;
 
                     ///
-                    double c0ies0 = 0;                    double c0ies1 = 0;                    double c0ies2 = 0;
-
-                    double c1ies0 = 0;                    double c1ies1 = 0;                    double c1ies2 = 0;
-
-                    double c2ies0 = 0;                    double c2ies1 = 0;                    double c2ies2 = 0;
-
-                    double c3ies0 = 0;                    double c3ies1 = 0;                    double c3ies2 = 0;
+                    double c0ies0 = 0; double c0ies1 = 0; double c0ies2 = 0; double c1ies0 = 0; double c1ies1 = 0; double c1ies2 = 0;
+                    double c2ies0 = 0; double c2ies1 = 0; double c2ies2 = 0; double c3ies0 = 0; double c3ies1 = 0; double c3ies2 = 0;
                     ///
 
-                    double m = 0;
-                    double br = 0;
+                    double m = 0; double br = 0;
 
                     double ftime = 0;                    double fps = 0;                    double gtl2d = 0;
                     double gtl3d = 0;                    double gtlcc = 0;                    double gtlta = 0;
@@ -187,7 +197,7 @@ namespace Train_DUT
                     double vps = 0;
                  
 
-                    for (int c = 0; c < col; c++)
+                    for (int c = 0; c < col-1; c++)
                     {
                         string _data = curData[c];
 
@@ -433,29 +443,34 @@ namespace Train_DUT
                     Console.WriteLine(estModel);
                     */
 
-                    double estModel = 0;
+                    double cpuModel = 0;
 
                     if (f0 == 1600000)
                     {
-                        estModel = 28.83 * avgU + 1028;
+                        cpuModel = 28.83 * avgU + 1028;
                     }
                     else if (f0 == 1200000)
                     {
-                        estModel = 16.88 * avgU + 903.5;
+                        cpuModel = 16.88 * avgU + 903.5;
                     }
                     else if (f0 == 900000)
                     {
-                        estModel = 7.91 * avgU + 810;
+                        cpuModel = 7.91 * avgU + 810;
                     }
                     else if (f0 == 600000)
                     {
-                        estModel = 2.899 * avgU + 750;
+                        cpuModel = 2.899 * avgU + 750;
                     }
 
                     
                     double measurePower = powers[r];
 
-                    double estGPUpower = measurePower - estModel - 325; // 325 is the estimated of screen without RGB
+
+                    int pwIndex = loopIndx * 8;
+                    
+                    Console.WriteLine("pw index " + pwIndex);
+
+                    double estGPUpower = measurePower - (cpuModel + Double.Parse(powerPixels[pwIndex])); // 325 is the estimated of screen without RGB
 
                     if (estGPUpower < 0) estGPUpower = 0;
 
@@ -470,22 +485,24 @@ namespace Train_DUT
 
                     values += measurePower;
                     values2 += estGPUpower;
-                    
-                    saveData.Add(values);
-                    saveGPU.Add(values2);
+
+                    //saveData.Add(values);
+                    //saveGPU.Add(values2);
+                    dataSystem[loopIndx] = values;
+                    dataGPU[loopIndx] = values2;
 
                     values = "";
                     values2 = "";
                 
                 }
 
-                string[] toSave = (string[])saveData.ToArray(typeof(string));
-                File.WriteAllLines(this.savePath + @"\raw_data_" + i + ".txt", toSave);
+                //string[] toSave = (string[])saveData.ToArray(typeof(string));
+                File.WriteAllLines(this.savePath + @"\raw_data_" + i + ".txt", dataSystem);
                 saveData.Clear();
 
 
-                string[] toSave2 = (string[])saveGPU.ToArray(typeof(string));
-                File.WriteAllLines(this.savePath + @"\gpu_power_" + i + ".txt", toSave2);
+                //string[] toSave2 = (string[])saveGPU.ToArray(typeof(string));
+                File.WriteAllLines(this.savePath + @"\gpu_power_" + i + ".txt", dataGPU);
                 saveGPU.Clear();
 
             }

@@ -70,7 +70,7 @@ namespace Train_DUT
 
             string[] files = Directory.GetFiles(samplePath);
 
-            double[] powers = Tool.powerParseArr(files[8], 0, 5000);
+            double[] powers = Tool.powerParseArr(files[8], 0, files.Length, 5000);
 
             for (int j = 0; j < powers.Length; j++)
             {

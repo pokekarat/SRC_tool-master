@@ -273,16 +273,22 @@ namespace Train_DUT
              List<List<string>> lists = new List<List<string>>();
              List<string> list = null;
 
+             int countLoop = 0;
              for (int j = 0; j < datas.Length; j++)
              {
                 if (datas[j] == "") continue;
 
                 if (datas[j].Contains("loop"))
                 {
+                    ++countLoop;
+                    Console.WriteLine("Count loop = "+countLoop);
                     if (list != null)
+                    {
                         lists.Add(list);
+                    }
 
                     list = new List<string>();
+                    list.Add(datas[j]);
                     continue;
                 }
 
@@ -610,19 +616,38 @@ namespace Train_DUT
         public static void parseDisplayData()
         {
 
-            string[] brights = { "0", "43", "85", "128", "170", "213"}; //, "255" };
+            string[] brights = { /*"0", "43", "85", "128", "170", "213"};*/  "255" };
 
             string mergePw = "";
-            mergePw += "m c br r g b p\n";
+            mergePw = "m c br r g b p\n";
 
-            double[] powers = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\Screen\power.pt4", 20, 5000);
+            int offset = 31;
+            int stop = 0;
+            int start = 0;
+            bool isSkipThisLine = false;
 
+            double[] powers = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\Screen\power_255.pt4", offset);
+
+            //string[] powers = File.ReadAllLines(@"G:\Semionline\Experiment\S4\Screen\output\power_output.txt");
+
+            //string[] toSave = Array.ConvertAll(powers, element => element.ToString());
+
+            //File.WriteAllLines(@"G:\Semionline\Experiment\S4\Screen\output\power_output.txt", toSave);
+
+            
             for (int bs = 0; bs < brights.Length; bs++)
             {
+                
                 Console.WriteLine("write file for "+brights[bs]);
 
                 string[] data = File.ReadAllLines(@"G:\Semionline\Experiment\S4\Screen\screen_color_b_"+brights[bs]+".txt");
-               
+
+                if (bs > 0) offset = 0;
+
+                /*start = start + stop;
+                stop = stop + data.Length + offset;
+
+                double[] powers = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\Screen\power.pt4", start + offset, stop, 5000);*/
 
                 //string[] header = data[0].Split('\t');
 
@@ -636,14 +661,13 @@ namespace Train_DUT
 
                 double m = 0;
                 double c = 0;
-                double power = 0;
-
+                
                 double br = 0;
                 
                 int r = 0, g = 0, b = 0;
 
 
-                for (int i = 1; i < data.Length; i++)
+                for (int i = 0; i < data.Length; i++)
                 {
                     // mergePw += data[i] + powers[i+29] + "\n";
 
@@ -685,11 +709,18 @@ namespace Train_DUT
                                 br = double.Parse(dataEle[1]);
                                 if ((int)br != int.Parse(brights[bs]))
                                 {
+
+                                    Console.WriteLine("unmatch");
+                                    isSkipThisLine = true;
                                     break;
+                                   
                                 }
                             }
                             else if (dataEle[0] == "rgb")
                             {
+
+                                if (dataEle[1] == "") continue;
+
                                 r = int.Parse(dataEle[1]);
 
                                 g = int.Parse(datas[j + 1]);
@@ -700,22 +731,48 @@ namespace Train_DUT
                         }
                     }
 
+                    if (isSkipThisLine)
+                    {
+                        isSkipThisLine = false;
+                        continue;
+                    }
+
                     //Pcpu <- input these data to cpu formula to get cpu estimated power of one core cpu
-                    double cpuPw = Config.CPU400MHzS4Power(util, its0, its1, its2, ies0, ies1, ies2,400);
+                    double cpuPw = Config.CPU400MHzS4Power(util, its0, its1, its2, ies0, ies1, ies2, 400);
 
-                    if (double.IsNaN(cpuPw)) continue;
+                    double pw = 0;
 
-                    double pw = powers[i] - cpuPw;
+                    if (!double.IsNaN(cpuPw))
+                    {
+                        pw = (powers[i]) - cpuPw;
+                        Console.WriteLine("NaN");
+                    }
+                    else
+                    {
+                        pw = 0;
+                        Console.WriteLine("NaN");
+                    }
+
+                    
                     //double pwScreen = powers[i + 29] -estCpuPower;
                     //Pscreen <- measure - Pcpu;
-                    Console.WriteLine("screen pw = " + pw);
 
-                    if (pw > 0)
-                        mergePw += m + " " + c + " " + brights[bs] + " " + r + " " + g + " " + b + " " + pw + "\n";
+
+                    if (pw < 0)
+                    {
+                        //Console.WriteLine(m + " " + c + " " + br + " " + r + " " + g + " " + b + " " + pw);
+                        pw = 0;
+                    }
+
+                    mergePw += m + " " + c + " " + br + " " + r + " " + g + " " + b + " " + pw + "\n";
+                   
+                   
                 }
 
-                File.WriteAllText(@"G:\Semionline\Experiment\S4\Screen\output\screen.txt", mergePw);
+               
             }
+
+            File.WriteAllText(@"G:\Semionline\Experiment\S4\Screen\output\screen_output2.txt", mergePw);
 
             mergePw = "";
 
@@ -748,7 +805,7 @@ namespace Train_DUT
                          31.56 * ((i1 / idleSum) * i1 / (e1)) +
                          0.76 * ((i2 / idleSum) * i2 / (e2)) +
                          0.38 * u +
-                         716.07;
+                         691; //716.07 for bright = 10
             }
             
 
@@ -783,7 +840,7 @@ namespace Train_DUT
                 if (!File.Exists(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".txt")) continue;
 
                 string[] data = File.ReadAllLines(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_"+fileName[f]+".txt");
-                double[] powerData = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".pt4", 20, 5000);
+                double[] powerData = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".pt4", 20, data.Length, 5000);
                 
                 double util = 0;
                 double its0 = 0;

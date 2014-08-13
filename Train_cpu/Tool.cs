@@ -115,7 +115,7 @@ namespace Train_DUT
             return results;
         }
 
-        public static double[] powerParseArr(string pt4file, int beginIndex, int avgDuration)
+        public static double[] powerParseArr(string pt4file, int start, int stop, int samplingRate)
         {
             string input = pt4file;
 
@@ -148,61 +148,87 @@ namespace Train_DUT
             PT4.Sample sample = new PT4.Sample();
 
 
-            double[] results = new double[sampleCount/avgDuration];
-            int startTime = beginIndex * avgDuration;
-            for (long sampleIndex = startTime; sampleIndex < sampleCount; sampleIndex++)
+
+            //double[] results = new double[sampleCount / samplingRate];
+           
+            List<double> ret = new List<double>();
+            //if (size == 0) size = (int)sampleCount;
+
+            int startTime = start * samplingRate;
+            int stopTime = stop * samplingRate;
+
+            for (long sampleIndex = startTime; sampleIndex < stopTime; sampleIndex++)
             {
                 PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
                 powerSum += sample.mainCurrent * sample.mainVoltage;
                 ++powerCnt;
 
-                if (powerCnt == avgDuration)
+                if (powerCnt == samplingRate)
                 {
                     powerAvg = powerSum / powerCnt;
-                    results[((sampleIndex + 1) / avgDuration)-1] = powerAvg;
+                    //results[((sampleIndex + 1) / samplingRate) - 1] = powerAvg;
+                    ret.Add(powerAvg);
                     powerSum = 0;
                     powerCnt = 0;
                 }
             }
 
-            return results;
+            return ret.ToArray();
         }
 
-        public static void powerPartition(string folder,int begin, int parSize)
+        public static double[] powerParseArr(string pt4file, int start)
         {
-            double[] powerValues = Tool.powerParseArr(folder, 0, 5000);
-            
-            string[] toSave = new string[parSize];
+            string input = pt4file;
 
-            int dataSize = powerValues.Length;
+            FileStream pt4Stream = File.Open(
+                                                 input,
+                                                  FileMode.Open,
+                                                  FileAccess.Read,
+                                                  FileShare.ReadWrite
+                                              );
 
-            int numFile = 1;
+            //Console.WriteLine("File source " + args[1]);
 
-            while(begin<dataSize && numFile <=7)
+            BinaryReader pt4Reader = new BinaryReader(pt4Stream);
+
+            // reader the file header
+            PT4.Pt4Header header = new PT4.Pt4Header();
+
+            PT4.ReadHeader(pt4Reader, ref header);
+
+            // read the Status Packet
+            PT4.StatusPacket statusPacket = new PT4.StatusPacket();
+            PT4.ReadStatusPacket(pt4Reader, ref statusPacket);
+
+            // determine the number of samples in the file
+            long sampleCount = PT4.SampleCount(pt4Reader, header.captureDataMask);
+
+            // pre-position input file to the beginning of the sample // data (saves a lot of repositioning in the GetSample // routine)
+            pt4Reader.BaseStream.Position = PT4.sampleOffset;
+            // process the samples sequentially, beginning to end
+            PT4.Sample sample = new PT4.Sample();
+
+            List<double> ret = new List<double>();
+
+            int begin = start * 5000;
+            for (long sampleIndex = begin; sampleIndex < sampleCount; sampleIndex++)
             {
-                
-                int partSize = begin + parSize;
+                PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
+                powerSum += (sample.mainCurrent * sample.mainVoltage);
+                ++powerCnt;
 
-                for (int j = begin; j < partSize; j++)
+                if (powerCnt == 5000)
                 {
-                    toSave[j - begin] = powerValues[j].ToString();
+                    powerAvg = powerSum / powerCnt;
+                    //results[((sampleIndex + 1) / samplingRate) - 1] = powerAvg;
+                    ret.Add(powerAvg);
+                    powerSum = 0;
+                    powerCnt = 0;
                 }
-
-                if (!Directory.Exists(Config.rootPath + @"\power\output"))
-                {
-                    Directory.CreateDirectory(Config.rootPath + @"\power\output");
-                }
-
-                //save
-                File.WriteAllLines(Config.rootPath + @"\power\output\power_" + numFile + @".txt", toSave);
-
-                for (int m = 0; m < toSave.Length; m++)
-                    toSave[m] = "";
-
-                begin = partSize;
-
-                numFile++;
             }
+
+            return ret.ToArray();
         }
+
     }
 }
