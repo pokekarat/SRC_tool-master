@@ -14,7 +14,7 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 4; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 8; // 1=train, 2=evaluate, 3=screen, 4 = gps
 
             if (mode == 11)
             {
@@ -35,7 +35,8 @@ namespace Train_DUT
 
             else if (mode == 8)
             {
-                testApp.Evaluate();
+                //testApp.parseNexusS();
+                testApp.parseS4();
             }
 
             //Train

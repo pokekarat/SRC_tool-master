@@ -307,6 +307,43 @@ namespace Train_DUT
             return lists;
          }
 
+
+        public static List<List<string>> processDataS4(string[] d)
+        {
+
+            string[] datas = d;
+
+            List<List<string>> lists = new List<List<string>>();
+            List<string> list = null;
+
+            for (int j = 0; j < datas.Length; j++)
+            {
+                if (datas[j] == "") continue;
+
+                if (datas[j].Contains("loop"))
+                {
+                    if (list != null)
+                        lists.Add(list);
+
+                    list = new List<string>();
+                    continue;
+                }
+
+                if (!datas[j].Contains("="))
+                {
+                    continue;
+                }
+
+                string[] dats = datas[j].Split('=');
+                list.Add(dats[1]);
+            }
+
+            //Add last list
+            lists.Add(list);
+            list = null;
+            return lists;
+        }
+
         public static double MAPE(List<double> measure, List<double> model)
         {
             double result = 0;
