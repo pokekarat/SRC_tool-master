@@ -157,7 +157,7 @@ namespace Train_DUT
             int startTime = start * samplingRate;
             int stopTime = stop * samplingRate;
 
-            for (long sampleIndex = startTime; sampleIndex < stopTime; sampleIndex++)
+            for (long sampleIndex = startTime; sampleIndex < sampleCount; sampleIndex++)
             {
                 PT4.GetSample(sampleIndex, header.captureDataMask, statusPacket, pt4Reader, ref sample);
                 powerSum += sample.mainCurrent * sample.mainVoltage;

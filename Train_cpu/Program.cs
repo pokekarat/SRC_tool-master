@@ -14,12 +14,15 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 8; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
 
-            if (mode == 11)
+            if (mode == 12)
             {
-                evalGPU.extractVideoFrame();
+                //evalScreen.execute();
+                Config.parseCPUData();
             }
+
+          
 
             if (mode == 10)
             {
@@ -79,29 +82,7 @@ namespace Train_DUT
                
                eg.Evaluate2();
             }
-            /*
-            string[] files = Directory.GetFileSystemEntries(@"D:\SemiOnline\Experiment\Nexus\CPU_idle");
-
-            for (int i = 0; i < files.Length; i++)
-            {
-                if (!files[i].Contains("test_"))
-                {
-                    Console.WriteLine(files[i]);
-                    string[] splitNames = files[i].Split('\\');
-
-                    string newString = "";
-
-                    for (int j = 0; j < splitNames.Length-1; j++)
-                    {
-                        newString += splitNames[j] + @"\";
-                    }
-
-                    newString += "test_1_" + splitNames[splitNames.Length - 1];
-
-                    File.Move(files[i], newString);
-                }
-            }
-            */
+            
 
             Console.WriteLine("Finish.");
             System.Media.SystemSounds.Asterisk.Play();

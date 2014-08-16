@@ -10,7 +10,7 @@ namespace Train_DUT
 {
     public class evalGPU
     {
-        string savePath = @"G:\Semionline\Experiment\S4\GPU\1";
+        string savePath = @"D:\research\S4\GPU\2";
 
         public evalGPU()
         {
@@ -109,17 +109,6 @@ namespace Train_DUT
 
             }
         }
-
-        public static void extractVideoFrame()
-        {
-            /*MediaDetector detector = new MediaDetector();
-            detector.LoadMedia(@"G:\Semionline\Experiment\S4\GPU\1\SCR_20140801_133651.mp4");
-            var src = detector.GetImage(new TimeSpan(TimeSpan.TicksPerSecond));*/
-
-           
-           
-        }
-
 
         public void Evaluate2()
         {
@@ -472,7 +461,7 @@ namespace Train_DUT
 
                     double estGPUpower = measurePower - (cpuModel + Double.Parse(powerPixels[pwIndex])); // 325 is the estimated of screen without RGB
 
-                    if (estGPUpower < 0) estGPUpower = 0;
+                    if (estGPUpower < 0) estGPUpower = 1;
 
                     
                     for (int x = 0; x < eles.Length; x++)

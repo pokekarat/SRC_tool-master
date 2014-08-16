@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -307,6 +308,7 @@ namespace Train_DUT
             return lists;
          }
 
+        public static List<string> paramName = new List<string>();
 
         public static List<List<string>> processDataS4(string[] d)
         {
@@ -320,7 +322,7 @@ namespace Train_DUT
             {
                 if (datas[j] == "") continue;
 
-                if (datas[j].Contains("loop"))
+                if (datas[j].Contains("_LOOP_"))
                 {
                     if (list != null)
                         lists.Add(list);
@@ -335,7 +337,16 @@ namespace Train_DUT
                 }
 
                 string[] dats = datas[j].Split('=');
-                list.Add(dats[1]);
+
+                paramName.Add(dats[0]);
+
+                string[] parameters = dats[1].Split(' ');
+
+                for (int p = 0; p < parameters.Length; p++)
+                {
+                    if(parameters[p] != "")
+                        list.Add(parameters[p]);
+                }
             }
 
             //Add last list
@@ -863,108 +874,76 @@ namespace Train_DUT
                                     "100_idle_1", "100_idle_10","100_idle_50","100_idle_100","100_idle_500","100_idle_1000"
                                 };
 
-            string header = "u its0 its1 its2 ies0 ies1 ies2 m c power\n";
+            ArrayList trainData = new ArrayList();
+            ArrayList testData = new ArrayList();
 
-            string toPrint = header;
-
+            string header = "util0 c0its0 c0its1 c0its2 c0ies0 c0ies1 c0ies2 freq bright power";
+            string value = "";
+            
+            trainData.Add(header);
+            testData.Add(header);
+            
             int fileLen = fileName.Length;
+
             for (int f = 0; f < fileLen; f++)
             {
 
+                Console.WriteLine("Finish " + f + ":" + fileLen);
 
-                Console.WriteLine("Finish "+f+":"+fileLen);
+                if (!File.Exists(@"D:\Research\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".txt")) continue;
 
-                if (!File.Exists(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".txt")) continue;
-
-                string[] data = File.ReadAllLines(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_"+fileName[f]+".txt");
-                double[] powerData = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".pt4", 20, data.Length, 5000);
+                string[] data = File.ReadAllLines(@"D:\Research\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".txt");
                 
-                double util = 0;
-                double its0 = 0;
-                double its1 = 0;
-                double its2 = 0;
-                double ies0 = 0;
-                double ies1 = 0;
-                double ies2 = 0;
-                double m = 0;
-                double c = 0;
-                double power = 0;
+                double[] powerData = Tool.powerParseArr(@"D:\Research\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".pt4", 20, data.Length, 5000);
 
                 int begin = 20;
+
                 int end = powerData.Length;
+
                 int end2 = data.Length;
 
                 int minEnd = Math.Min(end, end2);
+
+                int testIndex = minEnd - ((minEnd - begin) / 4);
+
                 for (int i = begin; i < minEnd; i++)
                 {
 
                     string line = data[i];
+
                     string[] elements = line.Split(' ');
 
-                    for (int j = 0; j < elements.Length; j++)
+                    for (int j = 2; j <= 10; j++)
                     {
-                        if (elements[j].Contains("="))
-                        {
-                            string[] dataEle = elements[j].Split('=');
-
-                            if (dataEle[0] == "u")
-                                util += double.Parse(dataEle[1]);
-
-                            else if (dataEle[0] == "its0")
-                                its0 += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "its1")
-                                its1 += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "its2")
-                                its2 += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "ies0")
-                                ies0 += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "ies1")
-                                ies1 += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "ies2")
-                                ies2 += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "m")
-                                m += double.Parse(dataEle[1]);
-                            else if (dataEle[0] == "cache")
-                                c += double.Parse(dataEle[1]);
-
-
-
-                            /*if (dataEle[0] == "u" || dataEle[0] == "its0" || dataEle[0] == "its1" || dataEle[0] == "its2" || dataEle[0] == "ies0" ||dataEle[0] == "ies1" ||
-                                dataEle[0] == "ies2" ||dataEle[0] == "m" ||dataEle[0] == "cache")
-                            {
-                                print += dataEle[1] + " ";
-                            }
-
-                            if (dataEle[0] == "cache")
-                            {
-                                print += powerData[j] + "\n";
-                            }*/
-                        }
-
+                        value += elements[j].Split('=')[1] + " ";
                     }
 
-                    power += powerData[i];
+                    value += (powerData[i] - 7.4);
+
+
+                    if (i >= testIndex)
+                        testData.Add(value);
+                    else
+                        trainData.Add(value);
+                                        
+                    value = "";
+
                 }
-
-                int size = end - begin;
-                double avgUtil = util / size;
-                double avgits0 = its0 / size;
-                double avgits1 = its1 / size;
-                double avgits2 = its2 / size;
-                double avgies0 = ies0 / size;
-                double avgies1 = ies1 / size;
-                double avgies2 = ies2 / size;
-                double avgM = m / size;
-                double avgC = c / size;
-                double avgPower = power / size;
-
-                string output = avgUtil + " " + avgits0 + " " + avgits1 + " " + avgits2 + " " + avgies0 + " " + avgies1 + " " + avgies2 + " " + avgM + " " + avgC + " " + avgPower;
-
-                toPrint += output + "\n";
             }
 
-            File.WriteAllText(@"G:\Semionline\Experiment\S4\CPU_old\CPU_one_core\output\train_400.txt", toPrint);
+            string[] savetainData = (string[])trainData.ToArray(typeof(string));
+            string saveTrainName = @"D:\research\S4\CPU_old\CPU_one_core\output\train.txt";
             
+            string[] savetestData = (string[])testData.ToArray(typeof(string));
+            string saveTestName = @"D:\research\S4\CPU_old\CPU_one_core\output\test.txt";
+
+            Console.WriteLine("File save");
+
+            File.WriteAllLines(saveTrainName, savetainData);
+            File.WriteAllLines(saveTestName, savetestData);
+
+            trainData.Clear();
+            testData.Clear();
         }
     }
 }

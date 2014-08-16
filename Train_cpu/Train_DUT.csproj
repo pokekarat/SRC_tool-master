@@ -55,6 +55,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="evalGPS.cs" />
     <Compile Include="evalGPU.cs" />
+    <Compile Include="evalScreen.cs" />
     <Compile Include="evalWiFi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
