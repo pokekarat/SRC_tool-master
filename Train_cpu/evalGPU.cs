@@ -10,7 +10,7 @@ namespace Train_DUT
 {
     public class evalGPU
     {
-        string savePath = @"D:\research\S4\GPU\2";
+        string savePath = @"D:\research\S4\Real_Test\app1";
 
         public evalGPU()
         {
@@ -122,7 +122,7 @@ namespace Train_DUT
             {
 
                 string[] datas = File.ReadAllLines(savePath + @"\sample" + i + ".txt");
-                string[] powerPixels = File.ReadAllLines(savePath + @"\screenPower.txt");
+                string[] powerPixels = File.ReadAllLines(savePath + @"\pixelPower.txt");
                 double[] powers = Tool.powerParseArr(i, savePath, 0, 5000);
 
                 lists = Config.processData(datas);

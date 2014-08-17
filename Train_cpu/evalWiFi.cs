@@ -400,5 +400,113 @@ namespace Train_DUT
                 }
             }
         }
-    }
+
+        public void parseS4()
+        {
+            
+                string savePath = @"D:\research\S4\wifi\11_Mbps";
+               
+                List<List<string>> lists = new List<List<string>>();
+
+                int numFiles = 2;
+                ArrayList saveData = new ArrayList();
+
+                for (int i = 1; i <= numFiles; i++)
+                {
+
+                    string inputFileName = savePath + @"\sample" + i + ".txt";
+                    if (!File.Exists(inputFileName)) continue;
+
+                    string[] datas = File.ReadAllLines(inputFileName);
+                    double[] powers = Tool.powerParseArr(i, savePath, 0, 5000);
+
+                    lists = Config.processDataS4(datas);
+
+                    int row = lists.Count - 1;
+                    int col = 0; // lists[0].Count;
+                    string values = "";
+                    //int pc = Config.paramName.Count;
+
+                    saveData.Add("tx rx up power");
+
+                    //10 is sync with power
+                    for (int r = 1; r < row; r++)
+                    {
+                        List<string> curData = lists[r];
+
+                        if (curData[33] == "255") continue;
+
+                        col = curData.Count;
+
+                        double sumUtil = 0;
+                        for (int u = 0; u <= 3; u++)
+                        {
+                            sumUtil += Double.Parse(curData[u]);
+                        }
+
+                        double avgUtil = sumUtil / 4;
+
+                        double[] idleState = new double[24];
+                        for (int id = 0; id < 24; id++)
+                        {
+                            idleState[id] = Double.Parse(curData[id+8]);
+                        }
+
+                        double b0 = -0.69;
+                        double b1 = 12.34;
+                        double b2 = 0.08;
+                        double bu = 0.34;
+                        double e = 734.21;
+                        double util0 = Double.Parse(curData[0]);
+
+                        double c0its0 = idleState[8];
+                        double c0its1 = idleState[9];
+                        double c0its2 = idleState[10];
+                        double c0ies0 = idleState[20]+1;
+                        double c0ies1 = idleState[21]+1;
+                        double c0ies2 = idleState[22]+1;
+                        double sum_c0its = (c0its0 + c0its1 + c0its2)+1;
+
+                        double cpu0power = (b0 * ((c0its0 / sum_c0its) * (c0its0 / c0ies0))) + (b1 * ((c0its1 / sum_c0its) * (c0its1 / c0ies1))) + (b2 * ((c0its2 / sum_c0its) * (c0its2 / c0ies2))) + (bu * util0) + e;
+
+                        double gap = ((2 * avgUtil) / 100) + 11;
+
+                        double totalcpuPower = cpu0power + (cpu0power * (gap/100));
+
+
+                        if (curData[36] == "up") curData[36] = "1.000";
+                        if (curData[36] == "down") curData[36] = "0.000";
+
+                        for (int c = 34; c <= 36; c++)
+                        {
+                            values += curData[c] + " ";
+                        }
+
+                        double wifiPower = powers[r + 6] - totalcpuPower;
+
+                        if (double.IsNaN(wifiPower))
+                        {
+                            Console.Write("");
+                        }
+
+                        if ( wifiPower < 0)
+                            values += "0";
+                        else
+                            values += wifiPower;
+
+                        saveData.Add(values);
+
+                        values = "";
+                    }
+
+                    string[] toSave = (string[])saveData.ToArray(typeof(string));
+                    string saveName = savePath + @"\raw_data_" + i + ".txt";
+                    Console.WriteLine("File save = " + saveName);
+                    File.WriteAllLines(saveName, toSave);
+                    saveData.Clear();
+
+
+                }
+            }
+        }
 }

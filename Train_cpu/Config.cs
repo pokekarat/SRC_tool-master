@@ -659,7 +659,6 @@ namespace Train_DUT
             } 
         }
 
-
         // Generate final data of screen
         public static void parseDisplayData()
         {
@@ -860,6 +859,209 @@ namespace Train_DUT
             return result;
         }
 
+        public static void parseCPUdata1400_1600()
+        {
+            int[] inx = { 13, 16 }; // 13, 16 };
+
+            ArrayList trainData = new ArrayList();
+            ArrayList testData = new ArrayList();
+
+            trainData.Add("util0 c0its0 c0its1 c0its2 c0ies0 c0ies1 c0ies2 freq0 bright");
+            testData.Add("util0 c0its0 c0its1 c0its2 c0ies0 c0ies1 c0ies2 freq0 bright");
+
+            for (int i = 0; i < inx.Length; i++)
+            {
+                string inputFileName = @"D:\research\S4\CPU\c1_3\1200_1600\sample" + inx[i] + ".txt";
+
+                if (!File.Exists(inputFileName)) continue;
+
+                string[] datas = File.ReadAllLines(inputFileName);
+                double[] powers = Tool.powerParseArr(inx[i], @"D:\research\S4\CPU\c1_3\1200_1600\", 0, 5000);
+
+                List<List<string>> lists = Config.processDataS4(datas);
+               
+
+                int row = lists.Count - 1;
+                int col = 0;
+                string values = "";
+
+                int testIndex = row - (row / 4);
+                //10 is sync with power
+                for (int r = 1; r < row; r++)
+                {
+                    List<string> curData = lists[r];
+
+                    col = curData.Count;
+
+                    values += curData[0] + " " + curData[8] + " " + curData[9] + " " + curData[10] + " "
+                        + curData[11] + " " + curData[12] + " " + curData[13] + " " + curData[14] +
+                        " " + curData[33] + " " + powers[r+1];
+
+                    
+                    if(r >= testIndex)
+                        testData.Add(values);
+                    else
+                        trainData.Add(values);
+
+                    values = "";
+                }
+
+               
+            }
+
+            string[] savetainData = (string[])trainData.ToArray(typeof(string));
+            string saveTrainName = @"D:\research\S4\CPU_old\CPU_one_core\output\train_1600000.txt";
+            File.WriteAllLines(saveTrainName, savetainData);
+
+            string[] savetestData = (string[])trainData.ToArray(typeof(string));
+            string saveTestName = @"D:\research\S4\CPU_old\CPU_one_core\output\test_1600000.txt";
+            File.WriteAllLines(saveTestName, savetestData);
+        }
+
+        public static void parseCPUDataFor900to1200()
+        {
+            string[] fileName = { 
+                                    "1_idle_1", "1_idle_10", "1_idle_50","1_idle_100","1_idle_500","1_idle_1000",
+                                    "15_idle_1", "15_idle_10", "15_idle_50","15_idle_100","15_idle_500","15_idle_1000",
+                                    "40_idle_1", "40_idle_10", "40_idle_50","40_idle_100","40_idle_500","40_idle_1000",
+                                    "65_idle_1", "65_idle_10", "65_idle_50","65_idle_100","65_idle_500","65_idle_1000"
+                                };
+
+            List<string> trainData = new List<string>();
+            List<string> testData = new List<string>();
+
+            string header = "util0 c0its0 c0its1 c0its2 c0ies0 c0ies1 c0ies2 freq0 bright power";
+            string value = "";
+
+            trainData.Add(header);
+            testData.Add(header);
+
+            int fileLen = fileName.Length;
+
+            string freq0 = "1200000";
+            string path = "CPU_idle_900_to_1200";
+
+            double[] powerData = Tool.powerParseArr(@"D:\\research\\S4\\CPU_old\\CPU_one_core\\old\\CPU_idle_900_to_1200\\test_1\\power\\power1.pt4", 0, 0, 5000);
+
+            for (int chk = 0; chk < powerData.Length; chk++)
+            {
+                if (powerData[chk] > 1500)
+                {
+                    powerData[chk] = 0;
+                }
+            }
+
+            string[] pwDataStr = new string[powerData.Length];
+            string pwValue = "";
+            for (int ch = 40; ch < powerData.Length; ch++)
+            {
+                pwDataStr[ch] = powerData[ch].ToString();
+                pwValue += pwDataStr[ch]+",";
+            }
+
+            string moPower = @"D:\research\S4\CPU_old\CPU_one_core\output\moPower.txt";
+            File.WriteAllLines(moPower, pwDataStr);
+
+            List<List<double>> powerList = new List<List<double>>();
+            List<double> powers;
+
+            string[] stringSeparators = new string[]{"0,0,0,0,0,0,0,0,0,0"};
+            string[] pw2 = pwValue.Split(stringSeparators, StringSplitOptions.None);
+
+            List<string> pw3 = new List<string>();
+            List<string> pw4 = new List<string>();
+            for (int aa = 0; aa < pw2.Length; aa++)
+            {
+                if (pw2[aa].Length > 10)
+                {
+                    string[] m1 = pw2[aa].Split(',');
+                    powers = new List<double>();
+
+                    for (int bb = 0; bb < m1.Length; bb++)
+                    {
+                        string vbb = m1[bb];
+                        if (vbb == "0" || vbb == "") continue;
+                        powers.Add(double.Parse(vbb));
+                    }
+
+                    if (powers.Count >= 2)
+                    {
+                        powers.RemoveAt(0);
+                        powers.RemoveAt(0);
+                        powers.RemoveAt(powers.Count - 1);
+                        powerList.Add(powers);
+                    }
+
+                   
+                }
+            }
+            
+            for (int f = 0; f < fileLen; f++)
+            {
+
+                string rootFilePath = @"D:\Research\S4\CPU_old\CPU_one_core\old\" + path + @"\test_1\test_1_freq_" + freq0 + "_util_" + fileName[f];
+
+                if (!File.Exists(rootFilePath + @".txt"))
+                {
+                    //Console.WriteLine("Skip "+rootFilePath + @".txt");
+                    continue;
+                }
+
+                Console.WriteLine("Exist " + rootFilePath + @".txt");
+
+                string[] data = File.ReadAllLines(rootFilePath + ".txt");
+
+                int dataLen = data.Length;
+
+                //double[] powerData = Tool.powerParseArr(rootFilePath + ".pt4", begin, 0, 5000);
+                List<double> powerDatas = powerList[f];
+
+                int powLen = powerDatas.Count;
+
+                //Clean data
+                for (int i = 0; i < powLen; i++)
+                {
+
+                    string line = data[i];
+
+                    string[] elements = line.Split(' ');
+                    
+                    if (elements[10].Split('=')[1] != "0.0")
+                    {
+                        continue;
+                    }
+
+                    for (int j = 2; j <= 10; j++)
+                    {
+                        value += elements[j].Split('=')[1] + " ";
+                    }
+
+                    value += powerDatas[i];
+
+                    if (i >= (powLen - (powLen / 4)))
+                        testData.Add(value);
+                    else
+                        trainData.Add(value);
+                    
+                    value = "";
+                }
+            }
+
+            
+            string[] savetainData = (string[])trainData.ToArray();
+            string saveTrainName = @"D:\research\S4\CPU_old\CPU_one_core\output\train_" + freq0 + ".txt";
+
+            string[] savetestData = (string[])testData.ToArray();
+            string saveTestName = @"D:\research\S4\CPU_old\CPU_one_core\output\test_" + freq0 + ".txt";
+
+            Console.WriteLine("File save");
+
+            File.WriteAllLines(saveTrainName, savetainData);
+            File.WriteAllLines(saveTestName, savetestData);
+
+            trainData.Clear();
+            testData.Clear();
+        }
          // Generate final data of screen
         public static void parseCPUData()
         {
@@ -877,7 +1079,7 @@ namespace Train_DUT
             ArrayList trainData = new ArrayList();
             ArrayList testData = new ArrayList();
 
-            string header = "util0 c0its0 c0its1 c0its2 c0ies0 c0ies1 c0ies2 freq bright power";
+            string header = "util0 c0its0 c0its1 c0its2 c0ies0 c0ies1 c0ies2 freq0 bright power";
             string value = "";
             
             trainData.Add(header);
@@ -885,40 +1087,60 @@ namespace Train_DUT
             
             int fileLen = fileName.Length;
 
+            string freq0 = "1000000";
+            string path = "CPU_idle_900_to_1200";
+
             for (int f = 0; f < fileLen; f++)
             {
 
-                Console.WriteLine("Finish " + f + ":" + fileLen);
-
-                if (!File.Exists(@"D:\Research\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".txt")) continue;
-
-                string[] data = File.ReadAllLines(@"D:\Research\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".txt");
+                string rootFilePath = @"D:\Research\S4\CPU_old\CPU_one_core\old\"+path+@"\test_1_freq_" + freq0 + "_util_" + fileName[f];
                 
-                double[] powerData = Tool.powerParseArr(@"D:\Research\S4\CPU_old\CPU_one_core\old\CPU_idle_400_to_800\test_1_freq_400000_util_" + fileName[f] + ".pt4", 20, data.Length, 5000);
+                if (!File.Exists(rootFilePath + @".txt"))
+                {
+                    //Console.WriteLine("Skip "+rootFilePath + @".txt");
+                    continue;
+                }
 
-                int begin = 20;
+                Console.WriteLine("Exist " + rootFilePath + @".txt");
 
-                int end = powerData.Length;
+                string[] data = File.ReadAllLines(rootFilePath + ".txt");
+                
+                int begin = 30;
+                int dataLen = data.Length;
 
-                int end2 = data.Length;
+                double[] powerData = Tool.powerParseArr(rootFilePath + ".pt4", begin, 0, 5000);
 
-                int minEnd = Math.Min(end, end2);
+                int powLen = powerData.Length;
 
-                int testIndex = minEnd - ((minEnd - begin) / 4);
+                int end = Math.Min(dataLen, powLen);
 
-                for (int i = begin; i < minEnd; i++)
+                int len = end;
+
+                int testIndex = len - ((len - begin) / 4);
+
+                for (int i = begin; i < len; i++)
                 {
 
                     string line = data[i];
 
                     string[] elements = line.Split(' ');
 
+                    if (!rootFilePath.Contains("_100_"))
+                    {
+                        string util = elements[2].Split('=')[1];
+                        if (util.Equals("100.00"))
+                        {
+                            continue;
+                        }
+                        
+                    }
+
                     for (int j = 2; j <= 10; j++)
                     {
                         value += elements[j].Split('=')[1] + " ";
                     }
 
-                    value += (powerData[i] - 7.4);
+                    value += (powerData[i-begin] - 7.4); //7.4 is the power of (bright = 10)
 
 
                     if (i >= testIndex)
@@ -932,10 +1154,10 @@ namespace Train_DUT
             }
 
             string[] savetainData = (string[])trainData.ToArray(typeof(string));
-            string saveTrainName = @"D:\research\S4\CPU_old\CPU_one_core\output\train.txt";
+            string saveTrainName = @"D:\research\S4\CPU_old\CPU_one_core\output\train_"+freq0+".txt";
             
             string[] savetestData = (string[])testData.ToArray(typeof(string));
-            string saveTestName = @"D:\research\S4\CPU_old\CPU_one_core\output\test.txt";
+            string saveTestName = @"D:\research\S4\CPU_old\CPU_one_core\output\test_"+freq0+".txt";
 
             Console.WriteLine("File save");
 

@@ -14,12 +14,13 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 8; // 1=train, 2=evaluate, 3=screen, 4 = gps
 
             if (mode == 12)
             {
                 //evalScreen.execute();
-                Config.parseCPUData();
+                //Config.parseCPUDataFor900to1200();
+                Config.parseCPUdata1400_1600();
             }
 
           
@@ -40,6 +41,8 @@ namespace Train_DUT
             {
                 //testApp.parseNexusS();
                 testApp.parseS4();
+
+                //new evalWiFi().parseS4();
             }
 
             //Train

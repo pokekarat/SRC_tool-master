@@ -15,16 +15,19 @@ ncols = len(image[0])
 npix = nrows * ncols
 print("rows x cols",nrows," ",ncols)
 sum = 0
-saveFile = 'D:\\research\\S4\\Real_Test\\app%d\\pixelPower.txt' % x
-file = open(saveFile,"a+")
+saveFile = 'D:\\research\\S4\\Real_Test\\app%d\\screenPower.txt' % x
+file = open(saveFile,"w+")
+file.write("power")
+file.write('\n')
 frame = 0
+avgPower = 0
 while success:
 	#print count
 	
 	#cv2.imwrite("G:\\Semionline\\Experiment\\S4\\GPU\\1\\frame%d.jpg" % count, image)
-	begin = 'frame'+ str(frame)
-	file.write(begin)
-	file.write('\n')
+	#begin = 'frame'+ str(frame)
+	#file.write(begin)
+	#file.write('\n')
 	color = ""
 	for r in xrange(1,nrows,6):
 		for c in xrange(1,ncols,6):
@@ -39,16 +42,22 @@ while success:
 				
 			color = str(rc)+' '+str(gc)+' '+str(bc)
 			
-			print(color)
-			file.write(str(color))
-			file.write('\n')
+			#print(color)
+			#file.write(str(color))
+			#file.write('\n')
+			#lm
 			#power = (0.74*255)+(0.42*rc)+(0.23*gc)+(-0.042*bc)-57.67
-			#sum += power
+			
+			#quadratic
+			power = 217.37+(0.43 * rc)+(0.23 * gc)+(-0.033 * bc) - 46.93			
+			sum += power
 			#print sum
-	end = 'end'+ str(frame)
-	file.write(end)
+	print str(sum/2840)
+	file.write(str(sum/2840))
+	#end = 'end'+ str(frame)
+	#file.write(end)
 	file.write('\n')
-	
+	sum = 0
 	count += 1
 	while count % 7 != 0:
 		success,image = vidcap.read()
