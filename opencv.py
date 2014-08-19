@@ -4,7 +4,7 @@ import datetime
 
 #for x in range(1,4):
 x = int(sys.argv[1])
-vidFile = 'D:\\research\\S4\\Real_Test\\app%d\\video.mp4' % x
+vidFile = 'D:\\research\\S4\\GPU\\%d\\video3.mp4' % x
 print vidFile
 vidcap = cv2.VideoCapture(vidFile)
 #totlFrame = cv.GetCaptureProperty(vidcap, cv.CV_CAP_PROP_FRAME_COUNT)
@@ -15,7 +15,7 @@ ncols = len(image[0])
 npix = nrows * ncols
 print("rows x cols",nrows," ",ncols)
 sum = 0
-saveFile = 'D:\\research\\S4\\Real_Test\\app%d\\screenPower.txt' % x
+saveFile = 'D:\\research\\S4\\GPU\\%d\\screenPower.txt' % x
 file = open(saveFile,"w+")
 file.write("power")
 file.write('\n')

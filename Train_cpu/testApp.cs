@@ -13,7 +13,7 @@ namespace Train_DUT
         {
             int numApp = 7;
 
-            for (int t = 2; t <= numApp; t++)
+            for (int t = numApp; t <= numApp; t++)
             {
                 string savePath = @"D:\research\S4\Real_Test\app"+t;
                 //string pixelFile = savePath + @"\pixelPower.txt";
@@ -21,7 +21,7 @@ namespace Train_DUT
                 List<List<string>> lists = new List<List<string>>();
 
                 int numFiles = 1;
-                int appStartTime = 20;
+                int start = 0;
                 ArrayList saveData = new ArrayList();
 
                 for (int i = 1; i <= numFiles; i++)
@@ -51,7 +51,7 @@ namespace Train_DUT
                     "ftime fps gtl2d gtl3d gtlcc gtlta gtt2d gtt3d gttcc gttta spm isp tal usseccpp usseccpv usselp usselv vpf vps powers");
 
                     //10 is sync with power
-                    for (int r = appStartTime; r < row; r++)
+                    for (int r =0; r < row; r++)
                     {
                         List<string> curData = lists[r];
 
@@ -66,7 +66,10 @@ namespace Train_DUT
                             values += curData[c] + " ";
                         }
 
-                        values += powers[r];
+                        if (r >= 10)
+                            values += powers[r - 9];
+                        else
+                            values += 0;
 
                         saveData.Add(values);
 

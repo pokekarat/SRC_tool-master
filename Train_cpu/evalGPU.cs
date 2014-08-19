@@ -10,7 +10,7 @@ namespace Train_DUT
 {
     public class evalGPU
     {
-        string savePath = @"D:\research\S4\Real_Test\app1";
+        string savePath = @"D:\research\S4\GPU\3";
 
         public evalGPU()
         {
@@ -117,12 +117,11 @@ namespace Train_DUT
 
             ArrayList saveData = new ArrayList();
             ArrayList saveGPU = new ArrayList();
-
-            for (int i = 1; i <= 1; i++)
+            for (int i = 3; i <= 3; i++)
             {
 
                 string[] datas = File.ReadAllLines(savePath + @"\sample" + i + ".txt");
-                string[] powerPixels = File.ReadAllLines(savePath + @"\pixelPower.txt");
+                //string[] powerPixels = File.ReadAllLines(savePath + @"\pixelPower.txt");
                 double[] powers = Tool.powerParseArr(i, savePath, 0, 5000);
 
                 lists = Config.processData(datas);
@@ -414,7 +413,7 @@ namespace Train_DUT
                  
                     }
 
-                    double avgU = (u0 + u1 + u2 + u3) / 4;
+                    double avgU = (u0 + u1 + u2 + u3) / 4; 
                     /*double avgIts0 = c0its0 + c1its0 + c2its0 + c3its0;
                     double avgIts1 = c0its1 + c1its1 + c2its1 + c3its1;
                     double avgIts2 = c0its2 + c1its2 + c2its2 + c3its2;
@@ -431,7 +430,7 @@ namespace Train_DUT
                     double estModel = c0 +c1 + c2 + c3;
                     Console.WriteLine(estModel);
                     */
-
+                    /*
                     double cpuModel = 0;
 
                     if (f0 == 1600000)
@@ -463,7 +462,7 @@ namespace Train_DUT
 
                     if (estGPUpower < 0) estGPUpower = 1;
 
-                    
+                     */
                     for (int x = 0; x < eles.Length; x++)
                     {
                         if(x>=34)
@@ -471,22 +470,22 @@ namespace Train_DUT
 
                         values += eles[x] + " ";
                     }
+                   
+                    values += powers[r]; // measurePower;
+                    values2 += 0;
 
-                    values += measurePower;
-                    values2 += estGPUpower;
-
-                    //saveData.Add(values);
+                    saveData.Add(values);
                     //saveGPU.Add(values2);
-                    dataSystem[loopIndx] = values;
-                    dataGPU[loopIndx] = values2;
+                    /*dataSystem[loopIndx] = values;
+                    dataGPU[loopIndx] = values2;*/
 
                     values = "";
                     values2 = "";
                 
                 }
 
-                //string[] toSave = (string[])saveData.ToArray(typeof(string));
-                File.WriteAllLines(this.savePath + @"\raw_data_" + i + ".txt", dataSystem);
+                string[] toSave = (string[])saveData.ToArray(typeof(string));
+                File.WriteAllLines(this.savePath + @"\raw_data_" + i + ".txt", toSave);
                 saveData.Clear();
 
 
