@@ -31,12 +31,6 @@ namespace Train_DUT
             }
 
 
-            if (mode == 9)
-            {
-                //Config.measure();
-                Config.trainS4cpu();
-            }
-
             else if (mode == 8)
             {
                 //testApp.parseNexusS();
@@ -52,14 +46,9 @@ namespace Train_DUT
                 ts.execute();
             }
 
-            else if (mode == 2)
-            {
-
-            }
-
             else if (mode == 3)
             {
-                new evalCPU().execute();
+                evalCPU.trainS4cpu();
             }
 
             else if (mode == 4)
@@ -81,9 +70,9 @@ namespace Train_DUT
 
             else if (mode == 7)
             {
-               evalGPU eg = new evalGPU();
-               
-               eg.Evaluate2();
+                evalGPU eg = new evalGPU();
+
+                eg.Evaluate2();
             }
             
 

@@ -7,6 +7,110 @@ using Parse;
 using System.Collections;
 namespace Train_DUT
 {
+    public static class MyListExtensions
+    {
+        public static double Median(this IEnumerable<double> list)
+        {
+            List<double> orderedList = list
+                .OrderBy(numbers => numbers)
+                .ToList();
+
+            int listSize = orderedList.Count;
+            double result;
+
+            if (listSize % 2 == 0) // even
+            {
+                int midIndex = listSize / 2;
+                result = ((orderedList.ElementAt(midIndex - 1) +
+                           orderedList.ElementAt(midIndex)) / 2);
+            }
+            else // odd
+            {
+                double element = (double)listSize / 2;
+                element = Math.Round(element, MidpointRounding.AwayFromZero);
+
+                result = orderedList.ElementAt((int)(element - 1));
+            }
+
+            return result;
+        }
+
+        public static double Mean(this List<double> values)
+        {
+            return values.Count == 0 ? 0 : values.Mean(0, values.Count);
+        }
+
+        public static double Mean(this List<double> values, int start, int end)
+        {
+            double s = 0;
+
+            for (int i = start; i < end; i++)
+            {
+                s += values[i];
+            }
+
+            return s / (end - start);
+        }
+
+        public static double Variance(this List<double> values)
+        {
+            return values.Variance(values.Mean(), 0, values.Count);
+        }
+
+        public static double Variance(this List<double> values, double mean)
+        {
+            return values.Variance(mean, 0, values.Count);
+        }
+
+        public static double Variance(this List<double> values, double mean, int start, int end)
+        {
+            double variance = 0;
+
+            for (int i = start; i < end; i++)
+            {
+                variance += Math.Pow((values[i] - mean), 2);
+            }
+
+            int n = end - start;
+            if (start > 0) n -= 1;
+
+            return variance / (n);
+        }
+
+        public static double StandardDeviation(this List<double> values)
+        {
+            return values.Count == 0 ? 0 : values.StandardDeviation(0, values.Count);
+        }
+
+        public static double StandardDeviation(this List<double> values, int start, int end)
+        {
+            double mean = values.Mean(start, end);
+            double variance = values.Variance(mean, start, end);
+
+            return Math.Sqrt(variance);
+        }
+
+        public static IEnumerable<double> Modes(this IEnumerable<double> list)
+        {
+            var modesList = list
+                .GroupBy(values => values)
+                .Select(valueCluster =>
+                        new
+                        {
+                            Value = valueCluster.Key,
+                            Occurrence = valueCluster.Count(),
+                        })
+                .ToList();
+
+            int maxOccurrence = modesList
+                .Max(g => g.Occurrence);
+
+            return modesList
+                .Where(x => x.Occurrence == maxOccurrence && maxOccurrence > 1) // Thanks Rui!
+                .Select(x => x.Value);
+        }
+    }
+
     class Tool
     {
         static double powerSum = 0;

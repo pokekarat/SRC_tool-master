@@ -5,113 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Train_DUT
 {
-    public static class MyListExtensions
-    {
-        public static double Median(this IEnumerable<double> list)
-        {
-            List<double> orderedList = list
-                .OrderBy(numbers => numbers)
-                .ToList();
-
-            int listSize = orderedList.Count;
-            double result;
-
-            if (listSize % 2 == 0) // even
-            {
-                int midIndex = listSize / 2;
-                result = ((orderedList.ElementAt(midIndex - 1) +
-                           orderedList.ElementAt(midIndex)) / 2);
-            }
-            else // odd
-            {
-                double element = (double)listSize / 2;
-                element = Math.Round(element, MidpointRounding.AwayFromZero);
-
-                result = orderedList.ElementAt((int)(element - 1));
-            }
-
-            return result;
-        }
-
-        public static double Mean(this List<double> values)
-        {
-            return values.Count == 0 ? 0 : values.Mean(0, values.Count);
-        }
-
-        public static double Mean(this List<double> values, int start, int end)
-        {
-            double s = 0;
-
-            for (int i = start; i < end; i++)
-            {
-                s += values[i];
-            }
-
-            return s / (end - start);
-        }
-
-        public static double Variance(this List<double> values)
-        {
-            return values.Variance(values.Mean(), 0, values.Count);
-        }
-
-        public static double Variance(this List<double> values, double mean)
-        {
-            return values.Variance(mean, 0, values.Count);
-        }
-
-        public static double Variance(this List<double> values, double mean, int start, int end)
-        {
-            double variance = 0;
-
-            for (int i = start; i < end; i++)
-            {
-                variance += Math.Pow((values[i] - mean), 2);
-            }
-
-            int n = end - start;
-            if (start > 0) n -= 1;
-
-            return variance / (n);
-        }
-
-        public static double StandardDeviation(this List<double> values)
-        {
-            return values.Count == 0 ? 0 : values.StandardDeviation(0, values.Count);
-        }
-
-        public static double StandardDeviation(this List<double> values, int start, int end)
-        {
-            double mean = values.Mean(start, end);
-            double variance = values.Variance(mean, start, end);
-
-            return Math.Sqrt(variance);
-        }
-
-        public static IEnumerable<double> Modes(this IEnumerable<double> list)
-        {
-            var modesList = list
-                .GroupBy(values => values)
-                .Select(valueCluster =>
-                        new
-                        {
-                            Value = valueCluster.Key,
-                            Occurrence = valueCluster.Count(),
-                        })
-                .ToList();
-
-            int maxOccurrence = modesList
-                .Max(g => g.Occurrence);
-
-            return modesList
-                .Where(x => x.Occurrence == maxOccurrence && maxOccurrence > 1) // Thanks Rui!
-                .Select(x => x.Value);
-        }
-    }
-
+  
     //S4
     public class evalCPU
     {
@@ -310,6 +208,120 @@ namespace Train_DUT
                         File.WriteAllLines(saveFile, trainData);
 
                              
+            }
+        }
+
+        public static void trainS4cpu()
+        {
+
+            System.Media.SystemSounds.Asterisk.Play();
+            string savePath = @"G:\SRC\research\S4\CPU";
+            int numTest = 1;
+
+            string[] freqs = { /*"250000", "350000", "450000", "500000", "550000", "600000",*/ "800000", "900000", "1000000", "1100000", "1200000", "1300000", "1400000", "1500000", "1600000" };
+            int[] utils = { 25, 60 };
+            int[] idleTimes = { 20, 100, 500, 1000 };
+
+            int[] numCoreEnable = { 1, 2, 3, 4 };
+
+            int index = 1;
+
+            for (int f = 0; f < freqs.Length; f++)
+            {
+                for (int u = 0; u < utils.Length; u++)
+                {
+                    for (int it = 0; it < idleTimes.Length; it++)
+                    {
+                        for (int c = 0; c < numCoreEnable.Length; c++)
+                        {
+
+                            Config.checkConnection();
+
+                            string freqActive = freqs[f];
+                            int utilActive = utils[u];
+                            int idleTime = idleTimes[it];
+                            int numCoreActive = numCoreEnable[c];
+
+                            //Set cores
+                            if (numCoreActive == 1)
+                            {
+                                Config.callProcess("echo 0 > /sys/devices/system/cpu/cpu1/online");
+                                Config.callProcess("echo 0 > /sys/devices/system/cpu/cpu2/online");
+                                Config.callProcess("echo 0 > /sys/devices/system/cpu/cpu3/online");
+                            }
+                            else if (numCoreActive == 2)
+                            {
+                                Config.callProcess("echo 1 > /sys/devices/system/cpu/cpu1/online");
+                                Config.callProcess("echo 0 > /sys/devices/system/cpu/cpu2/online");
+                                Config.callProcess("echo 0 > /sys/devices/system/cpu/cpu3/online");
+                            }
+                            else if (numCoreActive == 3)
+                            {
+                                Config.callProcess("echo 1 > /sys/devices/system/cpu/cpu1/online");
+                                Config.callProcess("echo 1 > /sys/devices/system/cpu/cpu2/online");
+                                Config.callProcess("echo 0 > /sys/devices/system/cpu/cpu3/online");
+                            }
+                            else if (numCoreActive == 4)
+                            {
+                                Config.callProcess("echo 1 > /sys/devices/system/cpu/cpu1/online");
+                                Config.callProcess("echo 1 > /sys/devices/system/cpu/cpu2/online");
+                                Config.callProcess("echo 1 > /sys/devices/system/cpu/cpu3/online");
+                            }
+
+                            int y = (utils[u] * (idleTimes[it] * 1000)) / (101 - utils[u]);
+                            int x = (idleTimes[it] * 1000) + y;
+
+                            for (int nc = 1; nc <= numCoreActive; nc++)
+                            {
+
+                                Config.callProcess("./data/local/tmp/strc " + x + " " + y + " &");
+                            }
+
+                            //Set freq
+                            for (int nc = 0; nc < numCoreActive; nc++)
+                            {
+                                Config.callProcess("echo " + freqActive + " > /sys/devices/system/cpu/cpu" + nc + "/cpufreq/scaling_min_freq");
+                                Config.callProcess("echo " + freqActive + " > /sys/devices/system/cpu/cpu" + nc + "/cpufreq/scaling_max_freq");
+                            }
+
+                            string saveFolder = savePath; // +@"\test_f" + freqActive + "_u" + utilActive + "_c" + numCoreActive;
+
+                            if (!Directory.Exists(saveFolder))
+                                Directory.CreateDirectory(saveFolder);
+
+                            for (int i = 1; i <= numTest; i++)
+                            {
+
+                                new Thread(new ThreadStart(Config.Run)).Start();
+
+                                Config.callProcess("./data/local/tmp/OGLES2PVRScopeExampleS4 " + index + " " + Config.time + " &");
+
+                                Thread.Sleep(10000);
+
+                                Config.callPowerMeter(saveFolder + @"\t" + index + "_f" + freqActive + "_u" + utilActive + "_c" + numCoreActive + "_idle_" + idleTime + "_" + i + ".pt4", Config.time);
+
+                            }
+
+                            Thread.Sleep(10000);
+                            
+                            Config.checkConnection();
+
+                            Config.callProcess("./data/local/tmp/busybox killall strc");
+
+                            Thread.Sleep(5000);
+
+                            Config.callProcess("chmod 777 data/local/tmp/stat/sample" + index + ".txt");
+
+                            Thread.Sleep(5000);
+
+                            Config.callProcess2("pull data/local/tmp/stat/sample" + index + ".txt g:\\Semionline\\Experiment\\S4\\CPU");
+                            
+                            Thread.Sleep(10000);
+                            ++index;
+                        }
+                    }
+                    
+                }
             }
         }
     }
