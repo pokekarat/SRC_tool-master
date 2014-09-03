@@ -21,7 +21,7 @@ namespace Train_DUT
                 List<List<string>> lists = new List<List<string>>();
 
                 int numFiles = 1;
-                int start = 0;
+               
                 ArrayList saveData = new ArrayList();
 
                 for (int i = 1; i <= numFiles; i++)

@@ -14,7 +14,7 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 7; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode = 3; 
 
             if (mode == 12)
             {

@@ -41,8 +41,6 @@ namespace Train_DUT
 
             string[] dataLines = File.ReadAllLines(samplePath + @"\gps_4.txt");
 
-
-            int count = 0;
             string output = "";
             List<string> dat = new List<string>();
 

@@ -11,7 +11,8 @@ namespace Train_DUT
 {
     public class Config
     {
-        public static string rootPath = @"D:\SemiOnline\Experiment\Nexus\WiFi\channel_54";
+        //public static string rootPath = @"D:\SemiOnline\Experiment\Nexus\WiFi\channel_54";
+        public static string rootPath = @"G:\SRC\research\S4\";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static string powerMeterPath = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
         public static int DUT = 1; //0=nexus, 1=S4
@@ -455,13 +456,13 @@ namespace Train_DUT
                 Config.callProcess2("pull data/local/tmp/on.txt g:\\Semionline\\Experiment\\S4");
                 ++count;
 
-               // if (count >= 10)
+                if (count % 10 == 0)
                 {
                     
-                    //SendMail("pokekarat@gmail.com", "pokekarat@gmail.com", "", "S4 is down", "S4 is down");
-                 //   Console.Beep(5000, 5000);
+                    Console.Beep(5000, 5000);
                     Console.WriteLine("Have some problem");
-                    
+                    Config.callPowerMeter(Config.rootPath + "reconnect.pt4", Config.time);
+
                 }
             }
 
@@ -515,8 +516,7 @@ namespace Train_DUT
             mergePw = "m c br r g b p\n";
 
             int offset = 31;
-            int stop = 0;
-            int start = 0;
+           
             bool isSkipThisLine = false;
 
             double[] powers = Tool.powerParseArr(@"G:\Semionline\Experiment\S4\Screen\power_255.pt4", offset);
@@ -681,10 +681,6 @@ namespace Train_DUT
             else if (e1 == 0) e1 = 0.01;
             else if (e2 == 0) e2 = 0.01;
 
-
-            double constant = 0;
-
-            
             /*if (f0 == 400)
                 constant = 716.07;*/
             /*else if (f0 == 600)
