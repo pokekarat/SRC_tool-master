@@ -18,11 +18,17 @@ namespace Train_DUT
         public void execute2(string channel)
         {
          
-            
             string[] sysFiles = Directory.GetFiles(Config.rootPath);
             string[] powFiles = Directory.GetFiles(Config.rootPath + @"\power\output");
+            double[] powers = Tool.powerParseArr(1, Config.rootPath + @"\power", 0, 5000);
+            List<double> power1 = new List<double>();
 
-            for (int i = 0; i < sysFiles.Length; i++)
+            for (int i = 39; i < 272; i++)
+            {
+                power1.Add(powers[i]);
+            }
+
+            for (int i = 0; i < 1;/*sysFiles.Length;*/ i++)
             {
                 string[] sysLines = File.ReadAllLines(sysFiles[i]);
                 string[] powLines = File.ReadAllLines(powFiles[i]);
@@ -30,167 +36,148 @@ namespace Train_DUT
                 int sysLen = sysLines.Length;
                 string[] toSave = new string[sysLen];
                 List<string> toSave2 = new List<string>();
-                toSave2.Add("channel numpack power");
+                toSave2.Add("util freq np bright channel power");
 
                 for (int j = 0; j < sysLen; j++)
                 {
+                    
                     string sysLine = sysLines[j];
+                    string[] elements = sysLine.Split(' ');
+
+                    string util = elements[2].Split('=')[1];
+                    string freq = elements[3].Split('=')[1];
+                    string bright = elements[4].Split('=')[1];
+                    string np = elements[9].Split('=')[1];
                     string measurePowStr = powLines[j];
 
                     //Console.WriteLine(sysLine + " power=" + measurePowStr);
-
-                    int np = 0;
-                    double cpu = 0;
-
-                    for (int k = 0; k < sysLine.Split(' ').Length; k++)
-                    {
-                        string[] element = sysLine.Split(' ')[k].Split('=');
-
-                        if (element[0].Equals("cpu"))
-                        {
-                            Double.TryParse(element[1], out cpu);
-                        }
-                        else if (element[0].Equals("np"))
-                        {
-                            Int32.TryParse(element[1], out np);
-                        }
-                    }
-
-                    double estCpuPower = Config.NEXUS_CPU_POWER_MODEL(1000, cpu);
-                    double measurePow = 0;
-                    Double.TryParse(measurePowStr, out measurePow);
-
-                    double subPower = measurePow - estCpuPower;
-
-                    if (subPower < 0) subPower = -1;
-                    if (np < 3) np = -1;
-
-                    string toSaveLine = np + " " + subPower;
-                    toSave[j] = toSaveLine;
+                   
+                    string toSaveLine = util + " " + freq + " " + np + " " + bright + " " + channel + " " + power1[j];
+                    toSave2.Add(toSaveLine);
 
                     //Console.WriteLine(toSaveLine);
                 
                 }
 
-                Dictionary<int, ArrayList> collection = new Dictionary<int, ArrayList>();
+                //Dictionary<int, ArrayList> collection = new Dictionary<int, ArrayList>();
 
-                int order = 0;
+                //int order = 0;
                 
-                for (int m = 0; m < toSave.Length; m++)
-                {
-                    string[] dataS = toSave[m].Split(' ');
+                //for (int m = 0; m < toSave.Length; m++)
+                //{
+                //    string[] dataS = toSave[m].Split(' ');
 
-                    int head = int.Parse(dataS[0]);
-                    double end = Double.Parse(dataS[1]);
+                //    int head = int.Parse(dataS[0]);
+                //    double end = Double.Parse(dataS[1]);
 
-                    if (end != -1 )
-                    {
+                //    if (end != -1 )
+                //    {
 
-                        if (i == 4 && m == 221)
-                        {
-                            Console.WriteLine("debug");
-                        }
+                //        if (i == 4 && m == 221)
+                //        {
+                //            Console.WriteLine("debug");
+                //        }
 
-                        ArrayList arr = new ArrayList();
-                        arr.Add(toSave[m]);
+                //        ArrayList arr = new ArrayList();
+                //        arr.Add(toSave[m]);
 
-                        int forward = m+1;
-                        int backward = m-1;
+                //        int forward = m+1;
+                //        int backward = m-1;
 
-                        if (m != 0 && m != toSave.Length - 1)
-                        {
+                //        if (m != 0 && m != toSave.Length - 1)
+                //        {
                             
-                            //Move forward
-                            while (!toSave[forward].Equals("-1 -1"))
-                            {
-                                arr.Add(toSave[forward]);
-                                ++forward;
+                //            //Move forward
+                //            while (!toSave[forward].Equals("-1 -1"))
+                //            {
+                //                arr.Add(toSave[forward]);
+                //                ++forward;
 
-                                if (forward == toSave.Length) break;
-                            }
+                //                if (forward == toSave.Length) break;
+                //            }
 
-                            //Move backward               
-                            while (!toSave[backward].Equals("-1 -1"))
-                            {
-                                arr.Add(toSave[backward]);
-                                --backward;
+                //            //Move backward               
+                //            while (!toSave[backward].Equals("-1 -1"))
+                //            {
+                //                arr.Add(toSave[backward]);
+                //                --backward;
 
-                                if (backward < 0) break;
-                            }
-                        }
-                        else
-                        {
-                            if (m == 0)
-                            {
-                                //Move forward
-                                while (!toSave[forward].Equals("-1 -1"))
-                                {
-                                    arr.Add(toSave[forward]);
-                                    ++forward;
+                //                if (backward < 0) break;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            if (m == 0)
+                //            {
+                //                //Move forward
+                //                while (!toSave[forward].Equals("-1 -1"))
+                //                {
+                //                    arr.Add(toSave[forward]);
+                //                    ++forward;
 
-                                    if (forward == toSave.Length) break;
-                                }
-                            }
-                            else if (m == (toSave.Length - 1))
-                            {
-                                //Move backward               
-                                while (!toSave[backward].Equals("-1 -1"))
-                                {
-                                    arr.Add(toSave[backward]);
-                                    --backward;
+                //                    if (forward == toSave.Length) break;
+                //                }
+                //            }
+                //            else if (m == (toSave.Length - 1))
+                //            {
+                //                //Move backward               
+                //                while (!toSave[backward].Equals("-1 -1"))
+                //                {
+                //                    arr.Add(toSave[backward]);
+                //                    --backward;
 
-                                    if (backward < 0) break;
-                                }
-                            }
-                        }
+                //                    if (backward < 0) break;
+                //                }
+                //            }
+                //        }
 
-                        m = forward;
+                //        m = forward;
 
-                        collection[order] = arr;
-                        ++order;
-                    }   
-                }
+                //        collection[order] = arr;
+                //        ++order;
+                //    }   
+                //}
 
-                int[] key = collection.Keys.ToArray();
+                //int[] key = collection.Keys.ToArray();
 
-                List<int> npData = new List<int>();
+                //List<int> npData = new List<int>();
 
-                List<double> powData = new List<double>();
+                //List<double> powData = new List<double>();
 
-                for (int k = 0; k < key.Length; k++)
-                {
-                    ArrayList ar = collection[k];
+                //for (int k = 0; k < key.Length; k++)
+                //{
+                //    ArrayList ar = collection[k];
 
-                    for (int j = 0; j < ar.Count; j++ )
-                    {
-                        string getData = (string)ar[j];
+                //    for (int j = 0; j < ar.Count; j++ )
+                //    {
+                //        string getData = (string)ar[j];
 
-                        string[] _getData = getData.Split(' ');
-                        npData.Add(int.Parse(_getData[0]));
-                        powData.Add(double.Parse(_getData[1]));
+                //        string[] _getData = getData.Split(' ');
+                //        npData.Add(int.Parse(_getData[0]));
+                //        powData.Add(double.Parse(_getData[1]));
 
-                    }
+                //    }
 
-                    npData.Sort();
-                    powData.Sort();
+                //    npData.Sort();
+                //    powData.Sort();
 
 
-                    if (npData[npData.Count - 1] != -1)
-                    {
-                        toSave2.Add(channel + " " + npData[npData.Count - 1] + " " + powData[powData.Count - 1]);
-                    }
+                //    if (npData[npData.Count - 1] != -1)
+                //    {
+                //        toSave2.Add(channel + " " + npData[npData.Count - 1] + " " + powData[powData.Count - 1]);
+                //    }
 
-                    npData.Clear();
-                    powData.Clear();
-                }
+                //    npData.Clear();
+                //    powData.Clear();
+                //}
 
                 if (!Directory.Exists(Config.rootPath + @"\output"))
                 {
                     Directory.CreateDirectory(Config.rootPath + @"\output");
                 }
 
-                File.WriteAllLines(Config.rootPath + @"\output\output_" + (i + 1) + ".txt", toSave2);
-                File.WriteAllLines(Config.rootPath + @"\output\test_output_" + (i + 1) + ".txt", toSave);
+                File.WriteAllLines(Config.rootPath + @"\output\train_wifi_" + (i+1) + ".txt", toSave2);
+                //File.WriteAllLines(Config.rootPath + @"\output\test_output_" + (i + 1) + ".txt", toSave);
 
                 toSave2.Clear();
             }

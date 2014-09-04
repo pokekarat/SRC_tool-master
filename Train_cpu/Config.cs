@@ -11,7 +11,7 @@ namespace Train_DUT
 {
     public class Config
     {
-        public static string rootPath = @"D:\SemiOnline\Experiment\Nexus\WiFi\channel_54";
+        public static string rootPath = @"D:\research\Nexus\WiFi\channel_54";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static string powerMeterPath = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
         public static int DUT = 1; //0=nexus, 1=S4
