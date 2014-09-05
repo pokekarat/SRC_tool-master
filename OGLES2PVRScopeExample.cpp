@@ -232,7 +232,7 @@ void method(int numTest, int numTime)
 							fgets(buffer,sizeof buffer, fp);
 							fgets(buffer,sizeof buffer, fp);
 							
-							sprintf(header,"\nloop_%d\n_CPU_\n%s",j,"util=");
+							sprintf(header,"\nloop_%d\n_CPU_\n%s",j,"util0=");
 							
 							//calculate cpu util
 							double cpu_util = parseCPU(buffer);
@@ -251,7 +251,7 @@ void method(int numTest, int numTime)
 						if((fp = fopen("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq","r")) != NULL) {	
 							
 							fgets(buffer,sizeof buffer, fp);
-							sprintf(header,"\n%s","freq=");
+							sprintf(header,"\n%s","freq0=");
 							strcat(header,buffer);
 							strcat(sample[j],header);
 							memset(&buffer[0], 0, sizeof(buffer));
@@ -263,7 +263,7 @@ void method(int numTest, int numTime)
 						if((fp = fopen("/sys/devices/system/cpu/cpu0/cpuidle/state0/time","r")) != NULL) {	
 							fgets(buffer,sizeof buffer, fp);
 							
-							sprintf(header,"%s","idle_time=");
+							sprintf(header,"%s","it=");
 							double cur = atof(buffer);
 							double diff_time = cur - prev_idle_time;
 							char output_idle[50];
@@ -283,7 +283,7 @@ void method(int numTest, int numTime)
 						
 							fgets(buffer,sizeof buffer, fp);
 							
-							sprintf(header,"\n%s","idle_usage=");
+							sprintf(header,"\n%s","ie=");
 							double cur = atof(buffer);
 							double diff_entry = cur - prev_idle_entry;
 							char output_entry[50];
@@ -316,7 +316,7 @@ void method(int numTest, int numTime)
 						
 							fgets(buffer,sizeof buffer, fp);
 							
-							sprintf(header,"_WiFi_\n%s","tx=");
+							sprintf(header,"_WIFI_\n%s","tx=");
 							
 							double cur = atof(buffer);
 							double diff_tx = cur - prev_tx;
@@ -353,6 +353,51 @@ void method(int numTest, int numTime)
 							printf("%s \n",sample[j]);
 							
 							prev_rx = cur;
+							
+						}
+						
+						//Battery capacity
+						if((fp = fopen("/sys/class/power_supply/battery/capacity","r")) != NULL) {
+						
+							fgets(buffer,sizeof buffer, fp);
+							
+							sprintf(header,"\n_BATTERY_\n%s","capacity=");
+							strcat(header,buffer);				
+							strcat(sample[j],header);
+						
+							memset(&buffer[0], 0, sizeof(buffer));
+							memset(&header[0], 0, sizeof(header));
+							printf("%s \n",sample[j]);
+							
+						}
+						
+						//Battery voltage
+						if((fp = fopen("/sys/class/power_supply/battery/voltage_now","r")) != NULL) {
+						
+							fgets(buffer,sizeof buffer, fp);
+							
+							sprintf(header,"%s","voltage=");
+							strcat(header,buffer);				
+							strcat(sample[j],header);
+						
+							memset(&buffer[0], 0, sizeof(buffer));
+							memset(&header[0], 0, sizeof(header));
+							printf("%s \n",sample[j]);
+							
+						}
+						
+						//Battery temperature
+						if((fp = fopen("/sys/class/power_supply/battery/temp","r")) != NULL) {
+						
+							fgets(buffer,sizeof buffer, fp);
+							
+							sprintf(header,"%s","temperature=");
+							strcat(header,buffer);				
+							strcat(sample[j],header);
+						
+							memset(&buffer[0], 0, sizeof(buffer));
+							memset(&header[0], 0, sizeof(header));
+							printf("%s \n",sample[j]);
 							
 						}
 					
