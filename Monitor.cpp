@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "PVRScopeStats.h"
 
-// Step 1. Define a function to initialise PVRScopeStats
+
 bool PSInit(SPVRScopeImplData **ppsPVRScopeData, SPVRScopeCounterDef **ppsCounters, SPVRScopeCounterReading* const psReading, unsigned int* const pnCount)
 {
 	//Initialise PVRScope
@@ -78,12 +78,6 @@ double parseCPU(char cpuLine[])
 	return diff_util;
 }
 
-void *callEvent(void *ptr){
-	char aut2[1024];
-	sprintf(aut2,"sh /data/local/tmp/events.sh");
-	system(aut2);
-}
-
 int nTest = 0; //  = atoi(argv[1]);    
 int nRows = 0; //atoi(argv[2]);
 
@@ -128,14 +122,6 @@ void method()
 			//LOGE("Error initializing PVRScope.");
 			printf("Error initializing PVRScope...\n");
 		}
-		
-		//Print each and every counter (and its group)		
-		//LOGI("Find below the list of counters:");
-		
-		/*for(int i = 0; i < uCounterNum; ++i)
-		{
-			printf(" Group %d %s\n", psCounters[i].nGroup, psCounters[i].pszName);
-		}*/
 		
 		// Step 3. Set the active group to 0
 		bActiveGroupChanged = true;
@@ -417,11 +403,6 @@ void method()
 				usleep(10 * 1000);
 				//usleep(1000000);
 		}
-		
-		//sprintf(aut,"sh /data/local/tmp/stopEvents.sh");
-		//system(aut);
-		
-		//fclose(fp);
 			
 		// Step 5. Shutdown PVRScopeStats
 		PVRScopeDeInitialise(&psData, &psCounters, &sReading);
@@ -438,8 +419,6 @@ void method()
 		printf("end file\n");
 		//Clear array memory
 		memset(&sample[0], 0, sizeof(sample));
-		//memset(&buffer[0], 0, sizeof(buffer));
-		//memset(&header[0], 0, sizeof(header));
 		memset(&aut[0], 0, sizeof(aut));
 		
 		prev_total = 0;
@@ -456,7 +435,7 @@ void method()
 
 int main(int argc, char **argv)
 {
-		printf("Start GPU testing...\n");
+		printf("Start sampling...\n");
 		//pthread_t thread1;
 		//const char *message1 = "Thread 1";
 		//int iret1;
