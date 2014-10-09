@@ -1,4 +1,4 @@
-SRC_tool (A work in progress of polishing)
+SRC_tool (Improving progress)
 ========
 
 Monitoring subsystem's workload statistics
