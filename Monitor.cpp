@@ -1,37 +1,6 @@
-/******************************************************************************
 
- @File         OGLES2PVRScopeExample.cpp
-
- @Title        Iridescence
-
- @Version      
-
- @Copyright    Copyright (c) Imagination Technologies Limited.
-
- @Platform     Independent
-
- @Description  Shows how to use our example PVRScope graph code.
-
-******************************************************************************/
-//#include "PVRShell.h"
-//#include "OGLES2Tools.h"
 #include "PVRScopeGraph.h"
 #include <pthread.h>
-/*********************************************************************************************
-*
-* This example outputs the values of the hardware counters found in Group 0
-* to Android Logcat once a second for 60 seconds, and consists of five steps:
-*
-* 1. Define a function to initialise PVRScopeStats
-* 2. Initialise PVRScopeStats
-* 3. Set the active group to 0
-* 4. Read and output the counter information for group 0 to Logcat
-* 5. Shutdown PVRScopeStats
-*
-*********************************************************************************************/
-
-//#define NUMBER_OF_LOOPS 140
-
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
@@ -115,30 +84,29 @@ void *callEvent(void *ptr){
 	system(aut2);
 }
 
+int nTest = 0; //  = atoi(argv[1]);    
+int nRows = 0; //atoi(argv[2]);
 
-
-
+char** sample; //[numTime * 25][numCol];
 
 //void *method(void *ptr)
-void method(int numTest, int numTime)
+void method()
 {
 		
 		char buffer[2048];
 		char header[1024];
+		char header2[2048];
 		char aut[1024];
+		int nCols = 2048;
 		
-		int numCol = 1024;
-		
-		char sample[numTime * 25][numCol];
-		/*
-		char **sample = (char **)malloc(numCol * sizeof(char *));		
-		for(int x=0; x < 19999; x++)
+		sample = (char **)malloc(nRows * sizeof(char *));		
+		for(int x=0; x < nRows; x++)
 		{
-			sample[x] = (char *)malloc(numCol * sizeof(char));
+			sample[x] = (char *)malloc(nCols * sizeof(char));
 		}
-		*/
 		
-		printf("test passed\n");
+		
+		printf("%d %d\n",nRows,nCols);
 		
 		SPVRScopeImplData *psData;
 		
@@ -178,9 +146,11 @@ void method(int numTest, int numTime)
 		
 		FILE *fp;
 		
-		while (j < numTime)
+		while (j < nRows)
 		{
-	
+				
+				
+				
 				// Ask for the active group 0 only on the first run. Then set it to 0xffffffff
 				if(bActiveGroupChanged)
 				{
@@ -190,6 +160,8 @@ void method(int numTest, int numTime)
 				{
 						uActiveGroup = 0xffffffff;
 				}
+				
+				
 				++index;
 				if (index < sampleRate) 
 				{
@@ -207,25 +179,7 @@ void method(int numTest, int numTime)
 					// Step 4. Read and output the counter information for group 0 to Logcat
 					if(PVRScopeReadCountersThenSetGroup(psData, &sReading, time_in_mill * 1000, uActiveGroup))
 					{
-					
-						//printf("Start uCounterNum = %d %lu \n",uCounterNum, time_in_mill);
-						if(j==1){
-							sprintf(aut,"echo %s > /sys/class/backlight/s5p_bl/brightness","0");
-							system(aut);
-						}
-						else if(j==5){
-							sprintf(aut,"echo %s > /sys/class/backlight/s5p_bl/brightness","255");
-							system(aut);
-						}
-						else if(j==10){
-			
-							pthread_t thread1;
-							const char *message1 = "Thread 1";
-							
-							int iret1;
-							iret1 = pthread_create(&thread1, NULL, callEvent, (void*) message1);
-						}
-							
+											
 						//Read CPU util every 1 second
 						if((fp = fopen("/proc/stat","r")) != NULL) {	
 									
@@ -239,13 +193,15 @@ void method(int numTest, int numTime)
 							char output[50];
 							snprintf(output,50,"%.2f",cpu_util);
 							strcat(header,output);
-							strcat(sample[j],header);
+							strcat(header2,header);
 					
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
 							
 							//printf("util %s \n", sample[j]);
+							fclose(fp);
 						}
+						
 						
 						//Read CPU Freq
 						if((fp = fopen("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq","r")) != NULL) {	
@@ -253,10 +209,12 @@ void method(int numTest, int numTime)
 							fgets(buffer,sizeof buffer, fp);
 							sprintf(header,"\n%s","freq0=");
 							strcat(header,buffer);
-							strcat(sample[j],header);
+							strcat(header2,header);
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
 							//printf(" %s \n",sample[j]);
+							
+							fclose(fp);
 						}
 						
 						//Read CPU idle time
@@ -269,13 +227,14 @@ void method(int numTest, int numTime)
 							char output_idle[50];
 							snprintf(output_idle,50,"%.2f",diff_time/1000);
 							strcat(header,output_idle);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 							
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
 							//printf("%s \n",sample[j]);
 							
 							prev_idle_time = cur;
+							fclose(fp);
 						}
 						
 						//Read CPU idle usage
@@ -289,13 +248,14 @@ void method(int numTest, int numTime)
 							char output_entry[50];
 							snprintf(output_entry,50,"%.2f",diff_entry);
 							strcat(header,output_entry);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 							
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
 							//printf("%s \n",sample[j]);
 							
 							prev_idle_entry = cur;
+							fclose(fp);
 						}
 						
 						//Read bright
@@ -304,11 +264,12 @@ void method(int numTest, int numTime)
 							
 							sprintf(header,"\n_DISPLAY_\n%s","bright=");
 							strcat(header,buffer);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 						
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
-							printf("%s \n",sample[j]);
+							//printf("%s \n",sample[j]);
+							fclose(fp);
 						}
 						
 						//wifi				
@@ -324,13 +285,14 @@ void method(int numTest, int numTime)
 							snprintf(output_tx,50,"%.2f",diff_tx);
 							
 							strcat(header,output_tx);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 						
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
-							printf("%s \n",sample[j]);
+							//printf("%s \n",sample[j]);
 							
 							prev_tx = cur;
+							fclose(fp);
 						}
 						
 						
@@ -346,14 +308,14 @@ void method(int numTest, int numTime)
 							snprintf(output_rx,50,"%.2f",diff_rx);
 							
 							strcat(header,output_rx);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 						
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
-							printf("%s \n",sample[j]);
+							//printf("%s \n",sample[j]);
 							
 							prev_rx = cur;
-							
+							fclose(fp);
 						}
 						
 						//Battery capacity
@@ -363,12 +325,12 @@ void method(int numTest, int numTime)
 							
 							sprintf(header,"\n_BATTERY_\n%s","capacity=");
 							strcat(header,buffer);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 						
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
-							printf("%s \n",sample[j]);
-							
+							//printf("%s \n",sample[j]);
+							fclose(fp);
 						}
 						
 						//Battery voltage
@@ -378,12 +340,12 @@ void method(int numTest, int numTime)
 							
 							sprintf(header,"%s","voltage=");
 							strcat(header,buffer);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 						
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
-							printf("%s \n",sample[j]);
-							
+							//printf("%s \n",sample[j]);
+							fclose(fp);
 						}
 						
 						//Battery temperature
@@ -393,13 +355,15 @@ void method(int numTest, int numTime)
 							
 							sprintf(header,"%s","temperature=");
 							strcat(header,buffer);				
-							strcat(sample[j],header);
+							strcat(header2,header);
 						
 							memset(&buffer[0], 0, sizeof(buffer));
 							memset(&header[0], 0, sizeof(header));
-							printf("%s \n",sample[j]);
-							
+							//printf("%s \n",sample[j]);
+							fclose(fp);
 						}
+						
+						//printf("%s \n",header2);
 					
 						// Check for all the counters in the system if the counter has a value on the given active group and ouptut it.
 						bool isFirst = true;
@@ -419,30 +383,32 @@ void method(int numTest, int numTime)
 									if(isFirst)
 									{
 										isFirst = false;
-										sprintf(header,"\n_GPU_\n%s=",psCounters[i].pszName);
+										sprintf(header,"_GPU_\n%s=",psCounters[i].pszName);
 									}
 									else
 										sprintf(header,"%s=",psCounters[i].pszName);
 									
 									sprintf(buffer, "%f\n",sReading.pfValueBuf[i]);
 									strcat(header,buffer);								
-									strcat(sample[j],header);
+									strcat(header2,header);
 
 									memset(&buffer[0], 0, sizeof(buffer));
 									memset(&header[0], 0, sizeof(header));
 									//strcat(sample[j]," \n");
 									//printf("%d : %s : %f\n", j,  psCounters[i].pszName, sReading.pfValueBuf[i]);
-									printf("%s \n",sample[j]);
+									//printf("%s \n",sample[j]);
 								}
 								
 							}
 							
 						}
 						isFirst = true;
-						//printf("End\n");
+						
 					}
 					
-					//printf("Data >> %s \n",sample[j]);
+					strcat(sample[j],header2);
+					memset(&header2[0], 0, sizeof(header2));
+					printf("Data >> %d \n %s",j,sample[j]);
 					++j;
 					
 				}
@@ -452,8 +418,8 @@ void method(int numTest, int numTime)
 				//usleep(1000000);
 		}
 		
-		sprintf(aut,"sh /data/local/tmp/stopEvents.sh");
-		system(aut);
+		//sprintf(aut,"sh /data/local/tmp/stopEvents.sh");
+		//system(aut);
 		
 		//fclose(fp);
 			
@@ -461,9 +427,9 @@ void method(int numTest, int numTime)
 		PVRScopeDeInitialise(&psData, &psCounters, &sReading);
 		
 		printf("save file\n");
-		sprintf(aut,"/data/local/tmp/stat/sample%d.txt",numTest);
+		sprintf(aut,"/data/local/tmp/stat/sample%d.txt",nTest);
 		fp = fopen(aut,"w+");
-		for(int i = 0; i <= numTime; i++)
+		for(int i = 0; i < nRows; i++)
 	    {
 			fprintf(fp, "%s", sample[i]);
 		}
@@ -494,10 +460,10 @@ int main(int argc, char **argv)
 		//pthread_t thread1;
 		//const char *message1 = "Thread 1";
 		//int iret1;
-		int nTest  = atoi(argv[1]);    
-		int nTime = atoi(argv[2]);
+		nTest  = atoi(argv[1]);    
+		nRows = atoi(argv[2]);
 		//iret1 = pthread_create(&thread1, NULL, method, (void*) message1);
-		method(nTest, nTime);
+		method();
 		
 		return 0;
 }
