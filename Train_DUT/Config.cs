@@ -31,12 +31,9 @@ namespace Train_DUT
         public static void callPowerMeter(String savePath, int time)
         {
             Console.WriteLine("Start monsoon\n");
-
-            String pathPowerSave = savePath;
-
             Process powerMonitor = new Process();
             powerMonitor.StartInfo.FileName = powerMeterPath;
-            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + pathPowerSave + "  /TRIGGER=DTXD"+time+"A"; //DTYD60A
+            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + "  /TRIGGER=DTXD" + time + "A"; //DTYD60A
             powerMonitor.Start();
             powerMonitor.WaitForExit();
 
@@ -87,8 +84,8 @@ namespace Train_DUT
             pInfo.RedirectStandardOutput = true;
             Process process = Process.Start(pInfo);
             StreamReader sOut = process.StandardOutput;
-            string result = sOut.ReadLine();            
-            Thread.Sleep(3000);
+            string result = sOut.ReadLine();
+            Thread.Sleep(5000);
         }
 
         public static void callProcess2(string command)
@@ -502,8 +499,6 @@ namespace Train_DUT
             }
             return msg;
         }
-
-        
 
         // Generate final data of screen
         public static void parseDisplayData()
