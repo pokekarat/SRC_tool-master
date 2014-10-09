@@ -11,8 +11,8 @@ namespace Train_DUT
 {
     public class Config
     {
-        public static string rootPath = @"G:\SRC\research\S4\";
-        public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
+        public static string rootPath = @"D:\research\Semi-online\";
+        public static string adbPath = @"D:\android\sdk\platform-tools\";
         public static string powerMeterPath = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
         public static int DUT = 1; //0=nexus, 1=S4
                                              
@@ -132,7 +132,7 @@ namespace Train_DUT
                Console.WriteLine(ex.Message);
            } */
             
-           Thread.Sleep(3000);
+           Thread.Sleep(5000);
         }
 
         public static Boolean isProcessRunning(string name)
@@ -282,7 +282,7 @@ namespace Train_DUT
                 if (datas[j].Contains("loop"))
                 {
                     ++countLoop;
-                    Console.WriteLine("Count loop = "+countLoop);
+                    //Console.WriteLine("Count loop = "+countLoop);
                     if (list != null)
                     {
                         lists.Add(list);

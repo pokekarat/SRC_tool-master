@@ -14,7 +14,7 @@ namespace Train_DUT
         static void Main(string[] args)
         {
 
-            int mode = 3; // 1=train, 2=evaluate, 3=screen, 4 = gps
+            int mode =8; // 1=train, 2=evaluate, 3=screen, 4 = gps
 
             if (mode == 12)
             {
@@ -33,8 +33,8 @@ namespace Train_DUT
 
             else if (mode == 8)
             {
-                //testApp.parseNexusS();
-                testApp.parseS4();
+                testApp.parseNexusS();
+                //testApp.parseS4();
 
                 //new evalWiFi().parseS4();
             }
