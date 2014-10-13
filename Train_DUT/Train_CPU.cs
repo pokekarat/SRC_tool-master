@@ -90,11 +90,9 @@ namespace Train_DUT
                                 //Call Monsoon
                              
                                 Config.callPowerMeter(folderPath + "test_" + t + "_freq_" + freqs[f] + "_util_" + (util[u]) + "_idle_" + idle[i] + ".pt4",100);
-
-
-                                Config.checkConnection();
-
                                 
+                                Config.checkConnection();
+                                                                
                                 //set DUT brightness to high.
                                 Console.WriteLine("Set High DUT brightness 100");
                                 Config.callProcess("echo 100 > " + this.brightPath);
@@ -109,7 +107,6 @@ namespace Train_DUT
                                 string srcFile = "/sdcard/semionline/base.txt";
                                 string destFile = folderPath + "test_" + t + "_freq_" + freqs[f] + "_util_" + (util[u]) + "_idle_" + idle[i] + ".txt";
                                 Config.pullFile(srcFile, destFile);
-                              
                             }
 
                             Console.WriteLine("Start charging...");

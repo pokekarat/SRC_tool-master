@@ -11,9 +11,9 @@ namespace Train_DUT
 {
     public class Config
     {
-        public static string rootPath = @"D:\research\Semi-online\";
-        public static string adbPath = @"D:\android\sdk\platform-tools\";
-        public static string powerMeterPath = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
+        public static string rootPath = @"G:\Semionline\Experiment\Nexus\bluetooth\";
+        public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
+        public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";
         public static int DUT = 1; //0=nexus, 1=S4
                                              
         

@@ -90,7 +90,9 @@ namespace Train_DUT
         public static void parseNexusS()
         {
 
-            Config.callProcess2("pull data/local/tmp/stat/sample1.txt " + Config.rootPath + "sample1.txt");
+            int numFiles = 3;
+
+            Config.callProcess2("pull data/local/tmp/stat/sample"+numFiles+@".txt " + Config.rootPath+"sample"+numFiles+@".txt");
 
             string savePath = Config.rootPath;
             //string header = "util freq idle_time idle_usage bright tx rx up ftime fps g3d_core gta_core g3d_time gta_time ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf power";
@@ -99,7 +101,7 @@ namespace Train_DUT
 
             List<List<string>> lists = new List<List<string>>();
 
-            int numFiles = 1;
+            
             ArrayList saveData = new ArrayList();
 
             for (int i = numFiles; i <= numFiles; i++)
