@@ -218,9 +218,9 @@ namespace Train_DUT
             
             int numTest = 1;
 
-            string[] freqs = { /*"250000", "350000", "450000", "500000", "550000", "600000",*/ "800000" }; //, "900000", "1000000", "1100000", "1200000", "1300000", "1400000", "1500000", "1600000" };
-            int[] utils = { 25 /*, 60*/ };
-            int[] idleTimes = { 20 /*, 100, 500, 1000*/ };
+            string[] freqs = { /*"250000", "350000", "450000", "500000", "550000", "600000",*/ "800000" , "900000", "1000000", "1100000", "1200000", "1300000", "1400000", "1500000", "1600000" };
+            int[] utils = { 25 , 60 };
+            int[] idleTimes = { 20 , 100, 500, 1000 };
 
             int[] numCoreEnable = { 1, 2, 3, 4 };
 
@@ -284,7 +284,7 @@ namespace Train_DUT
                                 Config.callProcess("echo " + freqActive + " > /sys/devices/system/cpu/cpu" + nc + "/cpufreq/scaling_max_freq");
                             }
 
-                            string saveFolder = Config.rootPath + "CPU"; // +@"\test_f" + freqActive + "_u" + utilActive + "_c" + numCoreActive;
+                            string saveFolder = Config.rootPath + "CPU";
 
                             if (!Directory.Exists(saveFolder))
                                 Directory.CreateDirectory(saveFolder);

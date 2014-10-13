@@ -457,7 +457,7 @@ namespace Train_DUT
                     
                     Console.Beep(5000, 5000);
                     Console.WriteLine("Have some problem");
-                    Config.callPowerMeter(Config.rootPath + "reconnect.pt4", Config.time);
+                    Config.callPowerMeter(Config.rootPath + "reconnect.pt4", 10);
 
                 }
             }
