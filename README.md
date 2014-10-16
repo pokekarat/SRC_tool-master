@@ -15,15 +15,24 @@ Requirement sw and hw installation:
 Sample and parse subsystem workload statistics
 ===
 
-Sample,
+1. Sample process,
 
-1) Install sample.o to "/data/local/tmp/" and then create a folder "stat" within "/data/local/tmp/" in Nexus S.
+1.1 Install sample.o to "/data/local/tmp/" and then create a folder "stat" within "/data/local/tmp/" in Nexus S.
 
-2) Run sample.o, e.g., ./data/local/tmp/sample x y.
+1.2 Run sample.o, e.g., ./data/local/tmp/sample x y.
 
 x = index of save file, e.g., if x=1, then the save file, i.e., sample1.txt, will be saved in /stat/ directory.
 
 y = Number of sample, e.g, 100.
 
-Parse,
+2. Parsing process,
 
+After finishing sample subsystem workload statistics, the parsing step (i.e., to parse samplex.txt to raw_data_x.txt) is processed as follows:
+
+2.1 Start parseApp (C#)
+
+2.2 Fill in ADB path (where is your adb program), Root path (where you want to save), and Sample file index which is match to the sampleX.txt.
+
+2.3 Press Parse button
+
+2.4 finish
