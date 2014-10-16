@@ -35,4 +35,4 @@ After finishing sample subsystem workload statistics, the parsing step (i.e., to
 
 2.3 Press Parse button
 
-2.4 finish
+2.4 A file "raw_data_x.txt" is created at the Root path. Later, you can integrate this data to your power trace data.
