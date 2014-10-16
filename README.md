@@ -7,7 +7,7 @@ Requirement sw and hw installation:
 
 1) VC# Ultimate 2012
 
-2) Monsoon power meter (option)
+2) Power meter (option: we use monsoon)
 
 3) Nexus S (S-LCD version)
 
