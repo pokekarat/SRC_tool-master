@@ -1,4 +1,4 @@
-SRC_tool for Nexus S (S-LCD model) (In progress of clean them all)
+SRC_tool for Nexus S (S-LCD model)
 ========
 
 Duty: Training and Monitoring subsystems.
