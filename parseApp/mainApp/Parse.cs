@@ -70,6 +70,8 @@ namespace mainApp
                 Console.WriteLine("File save = " + saveName);
                 File.WriteAllLines(saveName, toSave);
                 saveData.Clear();
+
+                MessageBox.Show("File raw_data_"+fileIndex+".txt is saved at "+Config.rootPath);
             }
         }
     }
