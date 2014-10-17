@@ -11,6 +11,8 @@ Requirement sw and hw installation:
 
 3) Nexus S (S-LCD version)
 
+4) Install R software
+
 ===
 Sample and parse subsystem workload statistics
 ===
@@ -36,3 +38,10 @@ After finishing sample subsystem workload statistics, the parsing step (i.e., to
 2.3 Press Parse button
 
 2.4 A file "raw_data_x.txt" is created at the Root path. Later, you can integrate this data to your power trace data.
+
+3. For analyze asynchronous power consumption behavior
+
+3.1 Download async_analysis.r
+3.2 Specify 3 paths to (1) raw_data_x.txt (line 15) (2) trainModify.txt (line 177) (3) asyncTable.txt (line 182)
+3.3 Run async_analysis.r to analyze file (1) and then generate file (2) and (3).
+
