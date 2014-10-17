@@ -1,0 +1,7 @@
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\obj\x86\Debug\Interop.WIA.dll
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\obj\x86\Debug\Train_DUT.csproj.ResolveComReference.cache
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\bin\Debug\Train_cpu.exe
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\bin\Debug\Train_cpu.pdb
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\obj\x86\Debug\Train_DUT.csprojResolveAssemblyReference.cache
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\obj\x86\Debug\Train_cpu.exe
+C:\Users\pok\experiment\SRC_tool-master\Train_DUT\obj\x86\Debug\Train_cpu.pdb
