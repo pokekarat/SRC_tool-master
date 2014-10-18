@@ -33,6 +33,15 @@ After finishing sample subsystem workload statistics, the parsing step (i.e., to
 
 ```bash
 3.1 Download async_analysis.r
-3.2 Specify 3 paths to (1) raw_data_x.txt (line 15) (2) trainModify.txt (line 177) (3) asyncTable.txt (line 182)
+3.2 Specify 3 paths to 
+    (1) raw_data_x.txt (line 15). 
+    (2) trainModify.txt (line 177).
+    (3) asyncTable.txt (line 182).
 3.3 Run async_analysis.r to analyze file (1) and then generate file (2) and (3).
+```
+
+### 4. Processing a subsystem power estimation
+
+```bash
+4.1
 ```
