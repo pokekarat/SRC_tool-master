@@ -38,10 +38,14 @@ After finishing sample subsystem workload statistics, the parsing step (i.e., to
     (2) trainModify.txt (line 177).
     (3) asyncTable.txt (line 182).
 3.3 Run async_analysis.r to analyze file (1) and then generate file (2) and (3).
+3.4 Use Eureqa (our use) to build a power model from (2).
 ```
 
 ### 4. Processing a subsystem power estimation
 
 ```bash
-4.1
+4.1 Download async_power_estimator.r: this is a function used with R language. it returns the power consumption of subsystem under test.
+4.2 Specify asyncTable path (line 1).
+4.3 Call the funciton "async_power_estimate" in the async_power_estimator.r for estimating power consumption caused by asynchronous power consumption behavior.
+4.4 Done.
 ```
