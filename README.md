@@ -1,18 +1,12 @@
-SRC_tool for Nexus S (S-LCD model)
-========
-
-Duty: Training and Monitoring subsystems.
+## SRC_tool for Nexus S (S-LCD model)
 
 Requirement sw and hw installation:
-
+```bash
 1) VC# Ultimate 2012
-
 2) Power meter (option: we use monsoon)
-
 3) Nexus S (S-LCD version)
-
 4) Install R software
-
+```
 ===
 Sample and parse subsystem workload statistics
 ===
