@@ -13,7 +13,9 @@ Requirement sw and hw installation:
 
 ```bash
 1.1 Install sample.o to "/data/local/tmp/" and then create a folder "stat" within "/data/local/tmp/" in Nexus S.
-1.2 Run sample.o, e.g., ./data/local/tmp/sample x y. x = index of save file, e.g., if x=1, then the save file, i.e., sample1.txt, will be saved in /stat/ directory. y = Number of sample, e.g, 100.
+1.2 Run sample.o, e.g., ./data/local/tmp/sample x y. 
+    x = index of save file, e.g., if x=1, then the save file, i.e., sample1.txt, will be saved in /stat/ directory. 
+    y = Number of sample, e.g, 100.
 ```
 
 ### 2. Parsing process
