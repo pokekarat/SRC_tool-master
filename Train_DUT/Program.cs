@@ -33,7 +33,7 @@ namespace Train_DUT
 
             else if (mode == 8)
             {
-                testApp.parseNexusS();
+                testApp.parseData();
                 //testApp.parseS4();
 
                 //new evalWiFi().parseS4();
