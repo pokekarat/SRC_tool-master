@@ -33,18 +33,22 @@ namespace TrainDUTs
             if (cb1.SelectedIndex == 0)
             {
                 //Nexus S
-                Config.rootPath = @"C:\Users\pok\Semionline\";
+                Config.rootPath = @"G:\Semionline\tool\testSRCtool\";
                 Config.adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
                 Config.brightPath = "/sys/class/backlight/s5p_bl/brightness";
-                Config.freqs = new int[] { 100000, 200000, 400000, 800000, 1000000 };
+                Config.freqs = new int[] { 200000, 400000, 800000, 1000000 };
                 Config.cpuNums = new int[] { 0 };
-
-                //trainCPu.train();
+              
                 myBrush = new SolidBrush(System.Drawing.Color.Green);
                 formGraphics = this.CreateGraphics();
                 formGraphics.FillRectangle(myBrush, new Rectangle(60, 80, 20, 15));
                 myBrush.Dispose();
                 formGraphics.Dispose();
+
+                trainCPu.train(statusTxt);
+
+                
+                
               
             }
         }

@@ -7,3 +7,12 @@ D:\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.pdb
 D:\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.exe
 D:\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.pdb
 D:\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.csprojResolveAssemblyReference.cache
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.exe.config
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.exe
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.pdb
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.exe
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.pdb
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.csprojResolveAssemblyReference.cache
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.Form1.resources
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.Properties.Resources.resources
+C:\Users\pok\experiment\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.csproj.GenerateResource.Cache

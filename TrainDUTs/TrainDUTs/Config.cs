@@ -17,7 +17,7 @@ namespace TrainDUTs
         public static string brightPath = "";
         public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";
         public static int DUT = 1; //0=nexus, 1=S4
-        public static int numTests = 7;
+        public static int numTests = 1;
 
         //CPU
         public static int[] freqs;
@@ -41,7 +41,6 @@ namespace TrainDUTs
             string command = adbPath + "adb pull " + phonePath + " " + hostPath;
 
             Console.WriteLine("Start pull file " + command + "\n");
-
             ProcessStartInfo pullInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
             pullInfo.CreateNoWindow = true;
             pullInfo.UseShellExecute = false;
@@ -49,7 +48,8 @@ namespace TrainDUTs
             pullInfo.RedirectStandardOutput = true;
             Process pullProc = Process.Start(pullInfo);
 
-
+            //callProcess(command);
+            
             Console.WriteLine("Finish pull file");
         }
 
@@ -81,7 +81,7 @@ namespace TrainDUTs
             Process process = Process.Start(pInfo);
             StreamReader sOut = process.StandardOutput;
             string result = sOut.ReadLine();
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
         }
 
         public static void callProcess2(string command)
@@ -325,10 +325,10 @@ namespace TrainDUTs
             Thread.Sleep(5000);
         }
 
-        static string onPath = "g:\\Semionline\\Experiment\\S4\\on.txt";
+        static string onPath = rootPath+"on.txt";
         public static void checkConnection()
         {
-            Config.callProcess2("pull data/local/tmp/on.txt g:\\Semionline\\Experiment\\S4");
+            Config.callProcess2("pull data/local/tmp/on.txt "+rootPath);
             //Config.callProcess("rm /data/local/tmp/stat/*.txt");
             //Thread.Sleep(5000);
 
@@ -339,7 +339,7 @@ namespace TrainDUTs
                 Console.WriteLine("Error count = " + count);
                 Config.callProcess2("kill-server");
                 Config.callProcess2("start-server");
-                Config.callProcess2("pull data/local/tmp/on.txt g:\\Semionline\\Experiment\\S4");
+                Config.callProcess2("pull data/local/tmp/on.txt "+rootPath);
                 ++count;
 
                 if (count % 10 == 0)
