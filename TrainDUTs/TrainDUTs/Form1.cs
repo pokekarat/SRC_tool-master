@@ -23,8 +23,11 @@ namespace TrainDUTs
         private void Form1_Load(object sender, EventArgs e)
         {
             this.cb1.SelectedIndex = 0;
-         
+            Tool.init(statusTxt);
 
+            //Nexus S
+            Config.rootPath = @"G:\Semionline\tool\testSRCtool\cpu\";
+            Config.adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -32,9 +35,7 @@ namespace TrainDUTs
             //0=Nexus S
             if (cb1.SelectedIndex == 0)
             {
-                //Nexus S
-                Config.rootPath = @"G:\Semionline\tool\testSRCtool\";
-                Config.adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
+               
                 Config.brightPath = "/sys/class/backlight/s5p_bl/brightness";
                 Config.freqs = new int[] { 200000, 400000, 800000, 1000000 };
                 Config.cpuNums = new int[] { 0 };
@@ -45,12 +46,24 @@ namespace TrainDUTs
                 myBrush.Dispose();
                 formGraphics.Dispose();
 
-                trainCPu.train(statusTxt);
+                trainCPu.train();
 
-                
-                
-              
+                //Tool.ParseData();
+
             }
+        }
+
+        private void sample_btn_Click(object sender, EventArgs e)
+        {
+            Config.fileIndex = int.Parse(this.fileIndex_tb.Text);
+            Config.duration = int.Parse(this.sampleTime_tb.Text);
+
+            Tool.sampleData();
+        }
+
+        private void parseBtn_Click(object sender, EventArgs e)
+        {
+            Tool.ParseData();
         }
     }
 }

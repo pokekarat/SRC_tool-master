@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Parse;
 using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+using System.Collections;
 
 namespace TrainDUTs
 {
@@ -117,6 +120,12 @@ namespace TrainDUTs
         static double powerSum = 0;
         static double powerAvg = 0;
         static double powerCnt = 0;
+        public static TextBox tbStatus;
+
+        public static void init(TextBox tb)
+        {
+            tbStatus = tb;             
+        }
 
         public static double powerParse(string file, int beginIndex, int avgDuration)
         {
@@ -334,6 +343,140 @@ namespace TrainDUTs
 
             return ret.ToArray();
         }
+                
+        public static void showStatus(string statusMessage)
+        {
+            tbStatus.AppendText(statusMessage + "\n");
+            tbStatus.Update();
+        }
+             
 
+        public static void sampleData()
+        {
+            int fIndex = Config.fileIndex;
+            int duration = Config.duration;
+            //1. Run sample.o
+            //2. Wait for 5 seconds.
+            //3. Run monsoon 
+            //4. Wait for 5 seconds
+            //5. Trigger display brightness from on to off, wait for 1 second, set from off to on.
+            //6. Wait for 4 seconds
+            //7. Start activity that we want to test.
+
+            //1
+            showStatus("1. Call sample " + fIndex);
+            Config.callProcess("/data/local/tmp/sample " + fIndex + " " + duration + " &");
+
+            //2
+            Thread.Sleep(5000);
+          
+            //3
+            showStatus("2. Call monsoon");
+            Thread thread = new Thread(new ThreadStart(monsoonTask));
+            thread.Start();
+                       
+            //4
+            Thread.Sleep(5000);
+
+            //5
+            //set DUT brightness to high.
+            showStatus("3. Set High DUT brightness 0");
+            Config.callProcess("echo 0 > " + Config.brightPath);
+
+            Thread.Sleep(1000);
+
+            showStatus("4. Set High DUT brightness 255");
+            Config.callProcess("echo 255 > " + Config.brightPath);
+            
+            //6
+            Thread.Sleep(4000);
+
+            //7
+            showStatus("5. Start activity");
+            Tool.showStatus("Start activity");
+            
+        }
+
+        public static void monsoonTask()
+        {
+            
+            Config.callPowerMeter(Config.rootPath + "power" + Config.fileIndex + ".pt4", Config.duration);
+
+        }
+
+        public static void ParseData()
+        {
+
+           /* int fileIndex = Config.fileIndex;
+
+            Config.callProcess2("pull data/local/tmp/stat/sample" + fileIndex + @".txt " + Config.rootPath + "sample" + fileIndex + @".txt"); */
+
+            string savePath = Config.rootPath;
+            
+            
+            string[] dataFiles = Directory.GetFiles(savePath + "data");
+            string[] dataNames = new string[dataFiles.Length];
+            for (int i = 0; i < dataFiles.Length; i++)
+                dataNames[i] = Path.GetFileNameWithoutExtension(dataFiles[i]);
+
+            string[] powerFiles = Directory.GetFiles(savePath + "power");
+            string[] powerNames = new string[powerFiles.Length];
+            for (int i = 0; i < powerFiles.Length; i++)
+                powerNames[i] = Path.GetFileNameWithoutExtension(powerFiles[i]);
+            
+            //string header = "util freq idle_time idle_usage bright tx rx up ftime fps g3d_core gta_core g3d_time gta_time ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf power";
+            string header = "util0 freq0 it ie bright tx rx status capacity volt temp ftime fps gtl2d_core gtl3d_core gtlcom_core gtlta_core gtt2d_core gtt3d_core gttcom_core gttta_core spm ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf vps";
+
+            List<List<string>> lists = new List<List<string>>();
+
+            ArrayList saveData = new ArrayList();
+
+            for (int i = 0; i < dataNames.Length; i++)
+            {
+
+                string inputFile = dataFiles[i];
+                
+                if (!File.Exists(inputFile))
+                {
+                    MessageBox.Show("File not found exception: " + inputFile);
+                    System.Environment.Exit(-1);
+                }
+
+                string[] datas = File.ReadAllLines(inputFile);
+
+                //int resultIndex = Array.BinarySearch<string>(powerNames, dataNames[i]);
+                double[] powers = Tool.powerParseArr(savePath + @"power\"+dataNames[i]+@".pt4", 0);
+
+                lists = Config.processData(datas);
+
+                int row = lists.Count - 1;
+                int col = 0; // lists[0].Count;
+                string values = "";
+                saveData.Add(header);
+
+                for (int r = Config.offset; r < row; r++)
+                {
+                    List<string> curData = lists[r];
+                    col = curData.Count;
+
+                    for (int c = 1; c < col; c++)
+                    {
+                        values += curData[c] + " ";
+                    }
+
+                    values += powers[r-Config.offset];
+                    saveData.Add(values);
+                    values = "";
+                }
+
+                string[] toSave = (string[])saveData.ToArray(typeof(string));
+                string saveName = Config.rootPath + "parse\\" + dataNames[i] + ".txt";
+                Console.WriteLine("File save = " + saveName);
+                File.WriteAllLines(saveName, toSave);
+                saveData.Clear();
+
+                //MessageBox.Show("File raw_data_" + i + ".txt is saved at " + Config.rootPath);
+            }
+        }
     }
 }

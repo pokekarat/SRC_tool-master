@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TrainDUTs
 {
@@ -17,16 +18,18 @@ namespace TrainDUTs
         public static string brightPath = "";
         public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";
         public static int DUT = 1; //0=nexus, 1=S4
-        public static int numTests = 1;
-
+        public static int numTests = 3;
+        public static int fileIndex;
+        public static int duration;
+        public static int offset = 20;
         //CPU
         public static int[] freqs;
         public static int[] cpuNums;
 
-
         public static void callPowerMeter(String savePath, int time)
         {
             Console.WriteLine("Start monsoon\n");
+
             Process powerMonitor = new Process();
             powerMonitor.StartInfo.FileName = powerMeterPath;
             powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + "  /TRIGGER=DTXD" + time + "A"; //DTYD60A
@@ -57,6 +60,7 @@ namespace TrainDUTs
         {
 
             Process powerMonitor = new Process();
+
             powerMonitor.StartInfo.FileName = "C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd";
             powerMonitor.Start();
 
@@ -497,5 +501,7 @@ namespace TrainDUTs
             trainData.Clear();
             testData.Clear();
         }
+
+       
     }
 }

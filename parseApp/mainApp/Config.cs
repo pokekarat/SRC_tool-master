@@ -12,7 +12,7 @@ namespace mainApp
     public class Config
     {
 
-        public static string rootPath = @"G:\Semionline\Experiment\Nexus\bluetooth\";
+        public static string rootPath = @"G:\Semionline\Experiment\S4\v_edge\";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static int sampleFileIndex = -1;
         public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";
@@ -30,9 +30,9 @@ namespace mainApp
             int countLoop = 0;
             for (int j = 0; j < datas.Length; j++)
             {
-                if (datas[j] == "") continue;
+                if (datas[j] == "" || datas[j].Contains("delay")) continue;
 
-                if (datas[j].Contains("loop"))
+                if (datas[j].Contains("_LOOP_"))
                 {
                     ++countLoop;
                     //Console.WriteLine("Count loop = "+countLoop);
@@ -52,6 +52,7 @@ namespace mainApp
                 }
 
                 string[] dats = datas[j].Split('=');
+
                 list.Add(dats[1]);
             }
 

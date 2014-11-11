@@ -36,6 +36,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.sampleBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox1
@@ -68,7 +69,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(186, 20);
             this.textBox2.TabIndex = 0;
-            this.textBox2.Text = "G:\\Semionline\\Experiment\\Nexus\\bluetooth\\";
+            this.textBox2.Text = "G:\\Semionline\\Experiment\\S4\\v_edge\\";
             // 
             // label4
             // 
@@ -81,7 +82,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(363, 46);
+            this.button1.Location = new System.Drawing.Point(357, 78);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
@@ -95,7 +96,7 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(186, 20);
             this.textBox3.TabIndex = 0;
-            this.textBox3.Text = "0";
+            this.textBox3.Text = "1";
             // 
             // label3
             // 
@@ -106,11 +107,22 @@
             this.label3.TabIndex = 1;
             this.label3.Text = "Sample file index";
             // 
+            // sampleBtn
+            // 
+            this.sampleBtn.Location = new System.Drawing.Point(357, 46);
+            this.sampleBtn.Name = "sampleBtn";
+            this.sampleBtn.Size = new System.Drawing.Size(75, 23);
+            this.sampleBtn.TabIndex = 2;
+            this.sampleBtn.Text = "Sample";
+            this.sampleBtn.UseVisualStyleBackColor = true;
+            this.sampleBtn.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(480, 357);
+            this.Controls.Add(this.sampleBtn);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
@@ -136,6 +148,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button sampleBtn;
 
 
     }

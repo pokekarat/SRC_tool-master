@@ -34,6 +34,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.statusTxt = new System.Windows.Forms.TextBox();
+            this.sample_btn = new System.Windows.Forms.Button();
+            this.fileIndex_tb = new System.Windows.Forms.TextBox();
+            this.sampleTime_tb = new System.Windows.Forms.TextBox();
+            this.parseBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cb1
@@ -52,7 +56,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
-            this.button1.Text = "Run";
+            this.button1.Text = "Train";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -92,11 +96,51 @@
             this.statusTxt.Size = new System.Drawing.Size(266, 112);
             this.statusTxt.TabIndex = 3;
             // 
+            // sample_btn
+            // 
+            this.sample_btn.Location = new System.Drawing.Point(251, 131);
+            this.sample_btn.Name = "sample_btn";
+            this.sample_btn.Size = new System.Drawing.Size(75, 23);
+            this.sample_btn.TabIndex = 4;
+            this.sample_btn.Text = "Sample";
+            this.sample_btn.UseVisualStyleBackColor = true;
+            this.sample_btn.Click += new System.EventHandler(this.sample_btn_Click);
+            // 
+            // fileIndex_tb
+            // 
+            this.fileIndex_tb.Location = new System.Drawing.Point(251, 161);
+            this.fileIndex_tb.Name = "fileIndex_tb";
+            this.fileIndex_tb.Size = new System.Drawing.Size(75, 20);
+            this.fileIndex_tb.TabIndex = 5;
+            this.fileIndex_tb.Text = "1";
+            // 
+            // sampleTime_tb
+            // 
+            this.sampleTime_tb.Location = new System.Drawing.Point(251, 191);
+            this.sampleTime_tb.Name = "sampleTime_tb";
+            this.sampleTime_tb.Size = new System.Drawing.Size(75, 20);
+            this.sampleTime_tb.TabIndex = 6;
+            this.sampleTime_tb.Text = "60";
+            // 
+            // parseBtn
+            // 
+            this.parseBtn.Location = new System.Drawing.Point(251, 60);
+            this.parseBtn.Name = "parseBtn";
+            this.parseBtn.Size = new System.Drawing.Size(75, 23);
+            this.parseBtn.TabIndex = 7;
+            this.parseBtn.Text = "Parse";
+            this.parseBtn.UseVisualStyleBackColor = true;
+            this.parseBtn.Click += new System.EventHandler(this.parseBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(393, 360);
+            this.Controls.Add(this.parseBtn);
+            this.Controls.Add(this.sampleTime_tb);
+            this.Controls.Add(this.fileIndex_tb);
+            this.Controls.Add(this.sample_btn);
             this.Controls.Add(this.statusTxt);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -119,6 +163,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox statusTxt;
+        private System.Windows.Forms.Button sample_btn;
+        private System.Windows.Forms.TextBox fileIndex_tb;
+        private System.Windows.Forms.TextBox sampleTime_tb;
+        private System.Windows.Forms.Button parseBtn;
 
 
 
