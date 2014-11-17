@@ -30,7 +30,7 @@ namespace mainApp
             int countLoop = 0;
             for (int j = 0; j < datas.Length; j++)
             {
-                if (datas[j] == "" || datas[j].Contains("delay")) continue;
+                if (datas[j] == "" || datas[j].Contains("delay") || datas[j].Contains("Start_time")) continue;
 
                 if (datas[j].Contains("_LOOP_"))
                 {
