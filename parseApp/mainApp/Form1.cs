@@ -21,11 +21,16 @@ namespace mainApp
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Config.rootPath = textBox2.Text;
-            Config.adbPath = textBox1.Text;
+            //Config.rootPath = textBox2.Text;
+            //Config.adbPath = textBox1.Text;
             Config.sampleFileIndex = int.Parse(textBox3.Text);
 
             Parse.ParseData();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //textBox2.Text = Config.rootPath;
         }
 
       

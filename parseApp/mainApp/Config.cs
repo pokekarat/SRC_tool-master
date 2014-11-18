@@ -12,7 +12,7 @@ namespace mainApp
     public class Config
     {
 
-        public static string rootPath = @"G:\Semionline\Experiment\S4\v_edge\";
+        public static string rootPath = @"C:\Users\pok\Research\Experiment\Dropbox\Project2_SemiOnline\Experiment\S4\";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static int sampleFileIndex = -1;
         public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";

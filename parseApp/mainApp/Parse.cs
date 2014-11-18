@@ -16,7 +16,7 @@ namespace mainApp
 
             int fileIndex = Config.sampleFileIndex;
 
-            Config.callProcess2("pull data/local/tmp/stat/sample"+fileIndex+@".txt " + Config.rootPath+"sample"+fileIndex+@".txt");
+           // Config.callProcess2("pull data/local/tmp/stat/sample"+fileIndex+@".txt " + Config.rootPath+"sample"+fileIndex+@".txt");
 
             string savePath = Config.rootPath;
             //string header = "util freq idle_time idle_usage bright tx rx up ftime fps g3d_core gta_core g3d_time gta_time ta_load txt_uld usse_cc_pix usse_cc_ver usse_load_pix usse_load_ver vpf power";
