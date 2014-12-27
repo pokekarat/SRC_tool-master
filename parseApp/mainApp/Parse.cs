@@ -15,6 +15,7 @@ namespace mainApp
         {
 
             int fileIndex = Config.sampleFileIndex;
+            int fileIndexEnd = Config.sampleFileIndexEnd;
 
            // Config.callProcess2("pull data/local/tmp/stat/sample"+fileIndex+@".txt " + Config.rootPath+"sample"+fileIndex+@".txt");
 
@@ -33,7 +34,7 @@ namespace mainApp
             
             ArrayList saveData = new ArrayList();
 
-            for (int i = fileIndex; i <= fileIndex; i++)
+            for (int i = fileIndex; i <= fileIndexEnd; i++)
             {
 
                 string inputFileName = savePath + "sample" + i + ".txt";
@@ -78,8 +79,10 @@ namespace mainApp
                 File.WriteAllLines(saveName, toSave);
                 saveData.Clear();
 
-                MessageBox.Show("File raw_data_"+fileIndex+".txt is saved at "+Config.rootPath);
+                //MessageBox.Show("File raw_data_"+fileIndex+".txt is saved at "+Config.rootPath);
             }
+
+            MessageBox.Show("File raw_data_" + fileIndex + "-" + fileIndexEnd + ".txt is saved at " + Config.rootPath);
         }
     }
 }

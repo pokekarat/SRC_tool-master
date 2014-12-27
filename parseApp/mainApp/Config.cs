@@ -12,13 +12,13 @@ namespace mainApp
     public class Config
     {
 
-        public static string rootPath = @"C:\Users\pok\Research\Experiment\Dropbox\Project2_SemiOnline\Experiment\S4\";
+        public static string rootPath = @"C:\Users\pok\Research\Experiment\Dropbox\Project2_SemiOnline\Experiment\S4\CPU_1core\";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static int sampleFileIndex = -1;
+        public static int sampleFileIndexEnd = -1;
         public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";
         //public static int DUT = 1; //0=nexus, 1=S4
                                              
-
         public static List<List<string>> processData(string[] d)
         {
 
