@@ -64,7 +64,7 @@ namespace mainApp
             //finish build sodcurve
             
             //Test
-            string testFile1 = Config.rootPath + "raw_data_1.txt";
+            string testFile1 = Config.rootPath + "raw_data_2.txt";
             string[] fileDatas = File.ReadAllLines(testFile1);
             
             string[] lines = fileDatas[2].Split(' ');
@@ -106,8 +106,9 @@ namespace mainApp
             }
 
             int batt_cap = 2600;
+            int time_use = 30; //min
             int diff_cap = cap_begin - cap_end;
-            int est_current = (diff_cap * batt_cap * 60) / (3000); 
+            int est_current = (diff_cap * batt_cap * 60) / (time_use * 100); 
 
         }
     }
