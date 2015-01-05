@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -110,6 +112,54 @@ namespace mainApp
             int diff_cap = cap_begin - cap_end;
             int est_current = (diff_cap * batt_cap * 60) / (time_use * 100); 
 
+        }
+
+        private void netBtn_Click(object sender, EventArgs e)
+        {
+            //textBox5.Multiline = true;
+            //textBox5.Text = "Waiting client...";
+            //textBox5.TextAlign = HorizontalAlignment.Center;
+            IPAddress addr = IPAddress.Parse(ip_txt.Text);
+            int port = int.Parse(port_txt.Text);
+            TcpListener tcpListener = new TcpListener(addr, port );
+            
+            if (tcpListener != null)
+            {
+                tcpListener.Start();
+                
+                Console.WriteLine("Waiting client");
+                TcpClient tcpClient = tcpListener.AcceptTcpClient();
+               
+                byte[] bytes = new byte[1024];
+                NetworkStream clientStream = tcpClient.GetStream();
+                //StreamReader reader = new StreamReader(clientStream, Encoding.Default);
+                StreamReader reader = new StreamReader(clientStream, Encoding.UTF8);
+               
+                
+                try
+                {
+                    string request = "";
+                    do
+                    {
+                        Console.WriteLine("Process reading...");
+                        //byte[] readBytes = reader.CurrentEncoding.GetBytes(reader.ReadToEnd());
+                        //Console.WriteLine(Encoding.Default.GetString(readBytes));
+                        request = reader.ReadLine();
+                        Console.WriteLine(request);
+                    } while (request != "B");
+
+                    //bytes = Encoding.UTF8.GetBytes("Thank for the message");
+                    //clientStream.Write(bytes, 0, bytes.Length);
+                    Console.WriteLine("End data");
+                }
+                finally
+                {
+                    reader.Close();
+                }
+
+                tcpListener.Stop();
+            }
+            
         }
     }
 }
