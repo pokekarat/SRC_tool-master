@@ -39,6 +39,10 @@
             this.sampleBtn = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.netBtn = new System.Windows.Forms.Button();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.ip_txt = new System.Windows.Forms.TextBox();
+            this.port_txt = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -138,11 +142,50 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // netBtn
+            // 
+            this.netBtn.Location = new System.Drawing.Point(357, 266);
+            this.netBtn.Name = "netBtn";
+            this.netBtn.Size = new System.Drawing.Size(75, 23);
+            this.netBtn.TabIndex = 4;
+            this.netBtn.Text = "Server";
+            this.netBtn.UseVisualStyleBackColor = true;
+            this.netBtn.Click += new System.EventHandler(this.netBtn_Click);
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(16, 266);
+            this.textBox5.Multiline = true;
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(186, 79);
+            this.textBox5.TabIndex = 5;
+            this.textBox5.Text = "result";
+            // 
+            // ip_txt
+            // 
+            this.ip_txt.Location = new System.Drawing.Point(357, 305);
+            this.ip_txt.Name = "ip_txt";
+            this.ip_txt.Size = new System.Drawing.Size(100, 20);
+            this.ip_txt.TabIndex = 6;
+            this.ip_txt.Text = "192.168.123.109";
+            // 
+            // port_txt
+            // 
+            this.port_txt.Location = new System.Drawing.Point(357, 332);
+            this.port_txt.Name = "port_txt";
+            this.port_txt.Size = new System.Drawing.Size(100, 20);
+            this.port_txt.TabIndex = 7;
+            this.port_txt.Text = "9999";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(480, 357);
+            this.Controls.Add(this.port_txt);
+            this.Controls.Add(this.ip_txt);
+            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.netBtn);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.sampleBtn);
             this.Controls.Add(this.button1);
@@ -175,6 +218,10 @@
         private System.Windows.Forms.Button sampleBtn;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button netBtn;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox ip_txt;
+        private System.Windows.Forms.TextBox port_txt;
 
 
     }
