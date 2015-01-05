@@ -64,52 +64,87 @@ namespace mainApp
             //finish build sodcurve
             
             //Test
-            string testFile1 = Config.rootPath + "raw_data_2.txt";
-            string[] fileDatas = File.ReadAllLines(testFile1);
-            
-            string[] lines = fileDatas[2].Split(' ');
-            int volt_begin = int.Parse(lines[45]);
+            int start =18;
+            int end = 21;
+            string mode = "charge";
 
-            lines = fileDatas[fileDatas.Length-1].Split(' ');
-            int volt_end = int.Parse(lines[45]);
-
-            int cap_begin = 0;
-            int cap_end = 0;
-
-            //Map volt_* with sodCurve
-            //int previousKey;
-            //int previousValue;
-
-            foreach (var key in sodCurve.Keys)
+            for(int k=start; k<=end; k++)
             {
-                var value = sodCurve[key];
+                string file = Config.rootPath + mode+@"\raw_data_"+k+".txt";
+                string[] fileDatas = File.ReadAllLines(file);
 
-                if (volt_begin > key)
+                int cap_begin_cabli = 0;
+                int cap_end_cabli = 0;
+
+                string[] lines = fileDatas[2].Split(' ');
+                int volt_begin = int.Parse(lines[45]);
+                cap_begin_cabli = int.Parse(lines[47]);
+
+                lines = fileDatas[fileDatas.Length-1].Split(' ');
+                int volt_end = int.Parse(lines[45]);
+                cap_end_cabli = int.Parse(lines[47]);
+
+                int cap_begin_sod = 0;
+                int cap_end_sod = 0;
+
+                //Map volt_* with sodCurve
+                //int previousKey;
+                //int previousValue;
+
+                foreach (var key in sodCurve.Keys)
                 {
-                    cap_begin = value;
-                    break;
+                    var value = sodCurve[key];
+
+                    if (volt_begin > key)
+                    {
+                        cap_begin_sod = value;
+                        break;
+                    }
+
+                    //previousKey = key;
+                    //previousValue = value;
                 }
 
-                //previousKey = key;
-                //previousValue = value;
-            }
-
-            foreach (var key in sodCurve.Keys)
-            {
-                var value = sodCurve[key];
-
-                if (volt_end > key)
+                foreach (var key in sodCurve.Keys)
                 {
-                    cap_end = value;
-                    break;
+                    var value = sodCurve[key];
+
+                    if (volt_end > key)
+                    {
+                        cap_end_sod = value;
+                        break;
+                    }
                 }
+
+                int batt_cap = 2600;
+                int time_use = 30; //min
+                int diff_cap_sod = 0;
+                int est_current_sod = 0;
+                int diff_cap_cabli = 0;
+                int est_current_cabli = 0;
+                int charge_ac = 380;
+
+                if (mode.Equals("discharge"))
+                {
+                    diff_cap_sod = cap_begin_sod - cap_end_sod;
+                    est_current_sod = (diff_cap_sod * batt_cap * 60) / (time_use * 100);
+
+                    diff_cap_cabli = cap_begin_cabli - cap_end_cabli;
+                    est_current_cabli = (batt_cap * 60) / ((time_use * 100) / diff_cap_cabli);
+                }
+                else //charge
+                {
+                    diff_cap_sod = cap_end_sod - cap_begin_sod;
+                    est_current_sod = (diff_cap_sod * batt_cap * 60) / (time_use * 100);
+                    est_current_sod = charge_ac - est_current_sod;
+
+                    diff_cap_cabli = cap_end_cabli - cap_begin_cabli;
+                    est_current_cabli = (batt_cap * 60) / ((time_use * 100) / diff_cap_cabli);
+                    est_current_cabli = charge_ac - est_current_cabli;
+                }
+
+                Console.WriteLine("Sample_" + k + " (sod)=" + est_current_sod + " (cabli)=" + est_current_cabli);
             }
-
-            int batt_cap = 2600;
-            int time_use = 30; //min
-            int diff_cap = cap_begin - cap_end;
-            int est_current = (diff_cap * batt_cap * 60) / (time_use * 100); 
-
         }
     }
 }

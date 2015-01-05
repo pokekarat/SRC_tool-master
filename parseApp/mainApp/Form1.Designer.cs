@@ -71,8 +71,8 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(186, 20);
             this.textBox2.TabIndex = 0;
-            this.textBox2.Text = "C:\\Users\\pok\\Research\\Experiment\\Dropbox\\Project2_SemiOnline\\Experiment\\S4\\CPU_1c" +
-    "ore";
+            this.textBox2.Text = "C:\\Users\\pok\\Research\\Experiment\\Dropbox\\Project2_SemiOnline\\Experiment\\S4\\SemiOn" +
+    "line\\Screen";
             // 
             // label4
             // 
