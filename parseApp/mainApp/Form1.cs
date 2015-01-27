@@ -66,13 +66,13 @@ namespace mainApp
             //finish build sodcurve
             
             //Test
-            int start =18;
-            int end = 21;
-            string mode = "charge";
+            int start = 1;
+            int end = 1;
+            string mode = ""; //discharge";
 
             for(int k=start; k<=end; k++)
             {
-                string file = Config.rootPath + mode+@"\raw_data_"+k+".txt";
+                string file = Config.rootPath + @"\raw_data_"+k+".txt";
                 string[] fileDatas = File.ReadAllLines(file);
 
                 int cap_begin_cabli = 0;
@@ -126,7 +126,7 @@ namespace mainApp
                 int est_current_cabli = 0;
                 int charge_ac = 380;
 
-                if (mode.Equals("discharge"))
+               // if (mode.Equals("discharge"))
                 {
                     diff_cap_sod = cap_begin_sod - cap_end_sod;
                     est_current_sod = (diff_cap_sod * batt_cap * 60) / (time_use * 100);
@@ -134,7 +134,7 @@ namespace mainApp
                     diff_cap_cabli = cap_begin_cabli - cap_end_cabli;
                     est_current_cabli = (batt_cap * 60) / ((time_use * 100) / diff_cap_cabli);
                 }
-                else //charge
+               /* else //charge
                 {
                     diff_cap_sod = cap_end_sod - cap_begin_sod;
                     est_current_sod = (diff_cap_sod * batt_cap * 60) / (time_use * 100);
@@ -143,7 +143,7 @@ namespace mainApp
                     diff_cap_cabli = cap_end_cabli - cap_begin_cabli;
                     est_current_cabli = (batt_cap * 60) / ((time_use * 100) / diff_cap_cabli);
                     est_current_cabli = charge_ac - est_current_cabli;
-                }
+                } */
 
                 Console.WriteLine("Sample_" + k + " (sod)=" + est_current_sod + " (cabli)=" + est_current_cabli);
             }
@@ -156,45 +156,49 @@ namespace mainApp
             //textBox5.TextAlign = HorizontalAlignment.Center;
             IPAddress addr = IPAddress.Parse(ip_txt.Text);
             int port = int.Parse(port_txt.Text);
-            TcpListener tcpListener = new TcpListener(addr, port );
-            
+            TcpListener tcpListener = new TcpListener(addr, port);
+
             if (tcpListener != null)
             {
                 tcpListener.Start();
-                
+
                 Console.WriteLine("Waiting client");
-                TcpClient tcpClient = tcpListener.AcceptTcpClient();
-               
+                //TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                Socket socketForClient = tcpListener.AcceptSocket();
+
                 byte[] bytes = new byte[1024];
-                NetworkStream clientStream = tcpClient.GetStream();
-                //StreamReader reader = new StreamReader(clientStream, Encoding.Default);
+                NetworkStream clientStream = new NetworkStream(socketForClient); // tcpClient.GetStream();
                 StreamReader reader = new StreamReader(clientStream, Encoding.UTF8);
-               
-                
+                StreamWriter writer = new StreamWriter(clientStream, Encoding.UTF8);
+
                 try
                 {
                     string request = "";
-                    do
+                 
+                    Console.WriteLine("Process reading...");
+                    while (true)
                     {
-                        Console.WriteLine("Process reading...");
-                        //byte[] readBytes = reader.CurrentEncoding.GetBytes(reader.ReadToEnd());
-                        //Console.WriteLine(Encoding.Default.GetString(readBytes));
                         request = reader.ReadLine();
+                        if (request == null) { break; }
                         Console.WriteLine(request);
-                    } while (request != "B");
 
-                    //bytes = Encoding.UTF8.GetBytes("Thank for the message");
-                    //clientStream.Write(bytes, 0, bytes.Length);
+                        socketForClient.Send(new ASCIIEncoding().GetBytes(request));
+                        //writer.WriteLine(request);
+                        //writer.Flush();
+                    }
+
                     Console.WriteLine("End data");
                 }
                 finally
                 {
                     reader.Close();
+                    clientStream.Close();
+                    //writer.Close();
                 }
 
                 tcpListener.Stop();
             }
-            
+
         }
     }
 }

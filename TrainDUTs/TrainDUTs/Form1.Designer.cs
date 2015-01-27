@@ -44,7 +44,8 @@
             // 
             this.cb1.FormattingEnabled = true;
             this.cb1.Items.AddRange(new object[] {
-            "Nexus S"});
+            "Nexus S",
+            "Galaxy S4"});
             this.cb1.Location = new System.Drawing.Point(60, 20);
             this.cb1.Name = "cb1";
             this.cb1.Size = new System.Drawing.Size(121, 21);

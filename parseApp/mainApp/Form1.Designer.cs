@@ -73,10 +73,10 @@
             // 
             this.textBox2.Location = new System.Drawing.Point(16, 147);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(186, 20);
+            this.textBox2.Size = new System.Drawing.Size(416, 20);
             this.textBox2.TabIndex = 0;
             this.textBox2.Text = "C:\\Users\\pok\\Research\\Experiment\\Dropbox\\Project2_SemiOnline\\Experiment\\S4\\SemiOn" +
-    "line\\Screen";
+    "line\\wifi\\online";
             // 
             // label4
             // 
@@ -167,7 +167,7 @@
             this.ip_txt.Name = "ip_txt";
             this.ip_txt.Size = new System.Drawing.Size(100, 20);
             this.ip_txt.TabIndex = 6;
-            this.ip_txt.Text = "192.168.123.109";
+            this.ip_txt.Text = "140.113.88.163";
             // 
             // port_txt
             // 
@@ -175,7 +175,7 @@
             this.port_txt.Name = "port_txt";
             this.port_txt.Size = new System.Drawing.Size(100, 20);
             this.port_txt.TabIndex = 7;
-            this.port_txt.Text = "9999";
+            this.port_txt.Text = "9876";
             // 
             // Form1
             // 

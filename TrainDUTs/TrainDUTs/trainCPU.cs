@@ -79,8 +79,8 @@ namespace TrainDUTs
                                 Config.callProcess("echo 0 > " + Config.brightPath);
 
                                 //Call Monsoon
-                                Tool.showStatus("Monsoon is measuring");
-                                Config.callPowerMeter(Config.rootPath + "test_" + t + "_freq_" + Config.freqs[f] + "_util_" + (util[u]) + "_idle_" + idle[i] + ".pt4", Config.time);
+                                //Tool.showStatus("Monsoon is measuring");
+                                //Config.callPowerMeter(Config.rootPath + "test_" + t + "_freq_" + Config.freqs[f] + "_util_" + (util[u]) + "_idle_" + idle[i] + ".pt4", Config.time);
 
                                 //Config.checkConnection();
                                 //showStatus("Connection passed.");
