@@ -12,7 +12,7 @@ namespace mainApp
     public class Config
     {
 
-        public static string rootPath = @"C:\Users\pok\Research\Experiment\Dropbox\Project2_SemiOnline\Experiment\S4\SemiOnline\CPU_1core\";
+        public static string rootPath = @"C:\Users\pok\Research\Experiment\Dropbox\Project2_SemiOnline\Experiment\S4\SemiOnline\CPU_1core\new\";
         public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         public static int sampleFileIndex = -1;
         public static int sampleFileIndexEnd = -1;

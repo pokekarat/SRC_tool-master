@@ -63,11 +63,11 @@ namespace mainApp
                 }
             }
 
+          
             //finish build sodcurve
-            
             //Test
-            int start = 1;
-            int end = 1;
+            int start = int.Parse(textBox3.Text);
+            int end = int.Parse(textBox4.Text);
             string mode = ""; //discharge";
 
             for(int k=start; k<=end; k++)
@@ -118,7 +118,7 @@ namespace mainApp
                     }
                 }
 
-                int batt_cap = 2600;
+                int batt_cap = 2600; //SOD 2000
                 int time_use = 30; //min
                 int diff_cap_sod = 0;
                 int est_current_sod = 0;
@@ -132,7 +132,8 @@ namespace mainApp
                     est_current_sod = (diff_cap_sod * batt_cap * 60) / (time_use * 100);
 
                     diff_cap_cabli = cap_begin_cabli - cap_end_cabli;
-                    est_current_cabli = (batt_cap * 60) / ((time_use * 100) / diff_cap_cabli);
+                    //est_current_cabli = (batt_cap * 60) / ((time_use * 100) / diff_cap_cabli);
+                    est_current_cabli = (diff_cap_cabli * batt_cap * 60) / (time_use * 100);
                 }
                /* else //charge
                 {
