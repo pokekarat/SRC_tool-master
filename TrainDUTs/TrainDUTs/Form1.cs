@@ -25,10 +25,11 @@ namespace TrainDUTs
         {
             this.cb1.SelectedIndex = 0;
             Tool.init(statusTxt);
+            Config.DUT = this.cb1.SelectedIndex;
 
             //Nexus S
-            Config.rootPath = @"G:\Semionline\tool\testSRCtool\cpu\";
-            Config.adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
+            //Config.rootPath = @"G:\Semionline\tool\testSRCtool\cpu\";
+            // Config.adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -88,7 +89,24 @@ namespace TrainDUTs
 
         private void parseBtn_Click(object sender, EventArgs e)
         {
+
+            Config.fileIndex = int.Parse(this.fileIndex_tb.Text);
+            Config.duration = int.Parse(this.sampleTime_tb.Text);
+
+            /*int whichDut = cb1.SelectedIndex;
+
+            if (whichDut == 0)
+                Tool.ParseData_nexus();
+            else
+                Tool.ParseData_s4();
+            */
+
             Tool.ParseData();
+        }
+
+        private void cb1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Config.DUT = this.cb1.SelectedIndex;
         }
     }
 }

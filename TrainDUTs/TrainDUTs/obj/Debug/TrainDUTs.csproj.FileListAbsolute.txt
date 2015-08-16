@@ -25,3 +25,12 @@ C:\Users\pok\Documents\GitHub\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\Trai
 C:\Users\pok\Documents\GitHub\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.Form1.resources
 C:\Users\pok\Documents\GitHub\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.Properties.Resources.resources
 C:\Users\pok\Documents\GitHub\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.csproj.GenerateResource.Cache
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.exe.config
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.exe
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.pdb
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.exe
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\bin\Debug\TrainDUTs.pdb
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.csprojResolveAssemblyReference.cache
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.Form1.resources
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.Properties.Resources.resources
+C:\Users\pok\Documents\GitHub\SRC_tool-master\SRC_tool-master\TrainDUTs\TrainDUTs\obj\Debug\TrainDUTs.csproj.GenerateResource.Cache

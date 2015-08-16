@@ -13,9 +13,11 @@ namespace TrainDUTs
 {
     public class Config
     {
-        public static string rootPath = @"G:\Semionline\Experiment\Nexus\bluetooth\";
-        public static string adbPath = @"C:\Users\pok\android\sdk\platform-tools\";
-        public static string brightPath = "";
+        //public static string rootPath = @"C:\Users\pok\Dropbox\Project1_SRC\research\s4\3G\data_081315\firefox_web_3g\"; //@"C:\Users\pok\Dropbox\experiment\data\ftp\";
+
+        public static string rootPath = @"C:\Users\pok\Dropbox\Project1_SRC\research\Nexus\Real_Test\app10\";
+        public static string adbPath = @""; //C:\Users\pok\android\sdk\platform-tools\";
+        public static string brightPath = "/sys/class/backlight/panel/brightness";
         public static string blankPath = "";
 
         public static string powerMeterPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd";
@@ -32,13 +34,17 @@ namespace TrainDUTs
         {
             Console.WriteLine("Start monsoon\n");
 
+            //string fullPath = @"C:\Program Files (x86)\Monsoon Solutions Inc\PowerMonitor\PowerToolCmd.exe";
             Process powerMonitor = new Process();
-            powerMonitor.StartInfo.FileName = powerMeterPath;
-            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + "  /TRIGGER=DTXD" + time + "A"; //DTYD60A
+            powerMonitor.StartInfo.FileName = @"D:\PowerToolCmd"; //"\"C:\\Program Files (x86)\\Monsoon Solutions Inc\\PowerMonitor\\PowerToolCmd.exe\""; //Path.GetFileName(fullPath);
+            //powerMonitor.StartInfo.WorkingDirectory = Path.GetDirectoryName(fullPath);
+            powerMonitor.StartInfo.Arguments = "/USBPASSTHROUGH=AUTO /VOUT=4.20 /KEEPPOWER /NOEXITWAIT /SAVEFILE=" + savePath + "  /TRIGGER=ATD" + time + "A"; //DTYD60A
+            powerMonitor.StartInfo.UseShellExecute = true;
             powerMonitor.Start();
             powerMonitor.WaitForExit();
 
             Console.WriteLine("End monsoon\n");
+            //Tool.showStatus("End monsoon");
         }
 
         public static void pullFile(string phonePath, string hostPath)
@@ -77,6 +83,22 @@ namespace TrainDUTs
         {
 
             command = adbPath + "adb shell \"su -c '" + command + "'\"";
+            Console.WriteLine("Start " + command + "\n");
+
+            ProcessStartInfo pInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+            pInfo.CreateNoWindow = true;
+            pInfo.UseShellExecute = false;
+            pInfo.RedirectStandardError = true;
+            pInfo.RedirectStandardOutput = true;
+            Process process = Process.Start(pInfo);
+            StreamReader sOut = process.StandardOutput;
+            string result = sOut.ReadLine();
+            Thread.Sleep(3000);
+        }
+
+        public static void callProcess3(string command)
+        {
+            //Tool.showStatus("Call sample app ");
             Console.WriteLine("Start " + command + "\n");
 
             ProcessStartInfo pInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
@@ -203,7 +225,6 @@ namespace TrainDUTs
             return diff_util;
         }
 
-
         public static List<List<string>> processData(string[] d)
         {
 
@@ -217,7 +238,7 @@ namespace TrainDUTs
             {
                 if (datas[j] == "") continue;
 
-                if (datas[j].Contains("loop"))
+                if (datas[j].Contains("LOOP"))
                 {
                     ++countLoop;
                     //Console.WriteLine("Count loop = "+countLoop);
@@ -227,7 +248,9 @@ namespace TrainDUTs
                     }
 
                     list = new List<string>();
+
                     list.Add(datas[j]);
+                    
                     continue;
                 }
 
@@ -237,7 +260,31 @@ namespace TrainDUTs
                 }
 
                 string[] dats = datas[j].Split('=');
-                list.Add(dats[1]);
+
+                string ret = dats[1];
+                if (ret.Contains('x'))
+                {
+
+                    if (Config.DUT == 1)
+                    {
+                        Console.WriteLine("x");
+                        ret = ret.Replace('x', '0');
+                    }
+                    else if (Config.DUT == 0)
+                    {
+                        ret = ret.Trim();
+                        string[] strs = ret.Split(' ');
+                        if (strs.Length > 1)
+                        {
+                            if (strs[0].Equals("x")) continue;
+                            ret = strs[0];
+                        }
+                        else
+                            continue;
+                    }
+                }
+
+                list.Add(ret);
             }
 
             //Add last list
@@ -396,8 +443,6 @@ namespace TrainDUTs
             return msg;
         }
 
-        
-
         // Generate final data of screen
         public static void parseCPUData()
         {
@@ -504,6 +549,5 @@ namespace TrainDUTs
             testData.Clear();
         }
 
-       
     }
 }

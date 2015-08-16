@@ -4,15 +4,13 @@ if(!is.element("apcluster", installed.packages()[,1]) )
 		r["CRAN"] <- "http://cran.csie.ntu.edu.tw/"
 		options(repos=r)})
 	install.packages("apcluster")
-
 }else{ 
 	print("apcluster already installed.")
 }
 
 require(apcluster)
-
 #Change to path where raw_data_x.txt exists.
-train <- read.table("Path to raw_data_x.txt", header=TRUE, sep= " ")
+train <- read.table("C:\\Users\\pok\\Research\\Experiment\\Dropbox\\experiment\\data\\test1\\3g_3_async_test.txt", header=TRUE, sep= "\t")
 trainData <- train
 
 len <- length(trainData[1,])
@@ -174,9 +172,9 @@ for(i in list2)
 trainModify <- train
 w <- which(asyncTable[,1] > 0)
 trainModify[w,]$power <- train[w,]$power - asyncTable[w,2]
-write.table(trainModify,file = "Path to \\trainModify.txt", sep = " ", row.names = F)
+write.table(trainModify,file = "C:\\Users\\pok\\Research\\Experiment\\Dropbox\\experiment\\data\\test1\\trainModify.txt", sep = " ", row.names = F)
 
 asyncTable[w,2]<-train[w,]$power
 asyncTableFile <- train[w,]
 asyncTableFile$power <- asyncTable[w,2]
-write.table(asyncTableFile,file = "Path to \\asyncTable.txt", sep = " ", row.names = F)
+write.table(asyncTableFile,file = "C:\\Users\\pok\\Research\\Experiment\\Dropbox\\experiment\\data\\test1\\asyncTable.txt", sep = " ", row.names = F)

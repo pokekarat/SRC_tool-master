@@ -36,7 +36,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.sampleBtn = new System.Windows.Forms.Button();
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.netBtn = new System.Windows.Forms.Button();
@@ -114,16 +113,6 @@
             this.label3.TabIndex = 1;
             this.label3.Text = "Sample file index";
             // 
-            // sampleBtn
-            // 
-            this.sampleBtn.Location = new System.Drawing.Point(357, 46);
-            this.sampleBtn.Name = "sampleBtn";
-            this.sampleBtn.Size = new System.Drawing.Size(75, 23);
-            this.sampleBtn.TabIndex = 2;
-            this.sampleBtn.Text = "Sample";
-            this.sampleBtn.UseVisualStyleBackColor = true;
-            this.sampleBtn.Click += new System.EventHandler(this.button1_Click);
-            // 
             // textBox4
             // 
             this.textBox4.Location = new System.Drawing.Point(119, 216);
@@ -187,7 +176,6 @@
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.netBtn);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.sampleBtn);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label4);
@@ -215,7 +203,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button sampleBtn;
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button netBtn;

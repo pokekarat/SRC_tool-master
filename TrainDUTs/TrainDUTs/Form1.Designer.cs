@@ -50,6 +50,7 @@
             this.cb1.Name = "cb1";
             this.cb1.Size = new System.Drawing.Size(121, 21);
             this.cb1.TabIndex = 0;
+            this.cb1.SelectedIndexChanged += new System.EventHandler(this.cb1_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -57,7 +58,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
-            this.button1.Text = "Train";
+            this.button1.Text = "Train HWs";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -103,7 +104,7 @@
             this.sample_btn.Name = "sample_btn";
             this.sample_btn.Size = new System.Drawing.Size(75, 23);
             this.sample_btn.TabIndex = 4;
-            this.sample_btn.Text = "Sample";
+            this.sample_btn.Text = "Test apps";
             this.sample_btn.UseVisualStyleBackColor = true;
             this.sample_btn.Click += new System.EventHandler(this.sample_btn_Click);
             // 
@@ -121,11 +122,11 @@
             this.sampleTime_tb.Name = "sampleTime_tb";
             this.sampleTime_tb.Size = new System.Drawing.Size(75, 20);
             this.sampleTime_tb.TabIndex = 6;
-            this.sampleTime_tb.Text = "60";
+            this.sampleTime_tb.Text = "1";
             // 
             // parseBtn
             // 
-            this.parseBtn.Location = new System.Drawing.Point(251, 60);
+            this.parseBtn.Location = new System.Drawing.Point(60, 188);
             this.parseBtn.Name = "parseBtn";
             this.parseBtn.Size = new System.Drawing.Size(75, 23);
             this.parseBtn.TabIndex = 7;
