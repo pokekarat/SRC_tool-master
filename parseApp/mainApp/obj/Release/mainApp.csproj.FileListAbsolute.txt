@@ -1,1 +1,0 @@
-D:\SRC_tool-master\parseApp\mainApp\bin\Release\mainApp.exe.config
