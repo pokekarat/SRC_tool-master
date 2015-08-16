@@ -1,46 +1,56 @@
-/******************************************************************************
-
- @File         OGLES2PVRScopeExample.cpp
-
- @Title        Iridescence
-
- @Version      
-
- @Copyright    Copyright (c) Imagination Technologies Limited.
-
- @Platform     Independent
-
- @Description  Shows how to use our example PVRScope graph code.
-
-******************************************************************************/
 #include <GLES2/gl2.h>
 #include <pthread.h>
 #include "PVRScopeGraph.h"
-/*********************************************************************************************
-*
-* This example outputs the values of the hardware counters found in Group 0
-* to Android Logcat once a second for 60 seconds, and consists of five steps:
-*
-* 1. Define a function to initialise PVRScopeStats
-* 4. Read and output the counter information for group 0 to Logcat
-* 2. Initialise PVRScopeStats
-* 3. Set the active group to 0
-* 5. Shutdown PVRScopeStats
-*
-*********************************************************************************************/
-
-//#define NUMBER_OF_LOOPS 140
-
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <jni.h>
-//
 #include <android/log.h>
 #include <android/bitmap.h>
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO , "PVRScope", __VA_ARGS__)
 #include "PVRScopeStats.h"
+
+double prev_total[4] = {0,0,0,0};
+double prev_idle[4] = {0,0,0,0};
+double csit[4][3] = {{0,0,0},{0,0,0},{0,0,0}, {0,0,0}};
+double csiu[4][3] = {{0,0,0},{0,0,0},{0,0,0}, {0,0,0}};
+double prev_tx = 0;
+double prev_rx = 0;
+char buffer[4096];
+char header[9999];
+char saveFile[2048];
+char **samples;
+
+FILE *fp_cpu;
+FILE *fp_cpu_chk;
+FILE *fp;
+FILE *fp_save;
+FILE *fp_mem;
+
+int numCol = 9999;
+int fileIndex = 0; //  = atoi(argv[1]);    
+int nRows = 0; //atoi(argv[2]);
+int delay = 0;
+int start_strc = 0;
+int stop_strc = 0;
+int start_load = 50000;
+int stop_load = 45000;
+int cur_cap = 100; // 100%
+int high_cap = 100;
+int low_cap = 0;
+int size = 0;
+int mode = 0;
+int network = 1;
+int freq = 0;
+int bright = 0;
+int end_time = 0;
+int numState = 1;
+int forceBreak = 0;
+int isRunOnce = 1;
+char path_rx[1024];
+char path_tx[1024];
+char path_oper[1024];
 
 // Step 1. Define a function to initialise PVRScopeStats
 bool PSInit(SPVRScopeImplData **ppsPVRScopeData, SPVRScopeCounterDef **ppsCounters, SPVRScopeCounterReading* const psReading, unsigned int* const pnCount)
@@ -66,18 +76,8 @@ bool PSInit(SPVRScopeImplData **ppsPVRScopeData, SPVRScopeCounterDef **ppsCounte
 	return true;
 }
 
-double prev_total[4] = {0,0,0,0};
-double prev_idle[4] = {0,0,0,0};
-
-double csit[4][3] = {{0,0,0},{0,0,0},{0,0,0}, {0,0,0}};
-double csiu[4][3] = {{0,0,0},{0,0,0},{0,0,0}, {0,0,0}};
-
-double prev_tx = 0;
-double prev_rx = 0;
-
 double parseMem(char totalBuf[], char freeBuf[], char bufferBuf[])
 {
-	
 	double ret = 0;
 	double total = 0;
 	double free = 0;
@@ -144,35 +144,6 @@ double parseCPU(char cpuLine[],int core)
 	return diff_util;
 }
 
-char buffer[4096];
-char header[9999];
-char saveFile[2048];
-char **samples;
-
-FILE *fp_cpu;
-FILE *fp_cpu_chk;
-FILE *fp;
-FILE *fp_save;
-FILE *fp_mem;
-
-int numCol = 9999;
-int fileIndex = 0; //  = atoi(argv[1]);    
-int nRows = 0; //atoi(argv[2]);
-int delay = 0;
-int start_strc = 0;
-int stop_strc = 0;
-int start_load = 50000;
-int stop_load = 45000;
-int cur_cap = 100; // 100%
-int high_cap = 100;
-int low_cap = 0;
-int size = 0;
-int mode = 0;
-int network = 1;
-int freq = 0;
-int bright = 0;
-int end_time = 0;
-
 int getCap()
 {
 	int capacity = -1;
@@ -186,7 +157,6 @@ int getCap()
 	return capacity;
 }
 
-int numState = 1;
 int setState(int status){
 
 	printf("Status = %d\n",status);
@@ -224,12 +194,6 @@ int setState(int status){
 		
 	return 1;
 }
-
-int forceBreak = 0;
-int isRunOnce = 1;
-char path_rx[1024];
-char path_tx[1024];
-char path_oper[1024];
 
 void method()
 {		
