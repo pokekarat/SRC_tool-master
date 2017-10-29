@@ -18,7 +18,7 @@ namespace TrainDUTs
             //More details of idle time setting can be found at the paper 
             //Towards better CPU  power management  on multicore  smartphones
             int[] idle = { 1 , 10, 50, 100, 500, 1000 }; //idle time
-            int[] util = { 1 , 35, 60, 100 }; // expect { 10, 50, 75, 100 }
+            int[] util = { 10, 50, 75, 100 }
 
             ArrayList measures = new ArrayList();
 
