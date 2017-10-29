@@ -79,7 +79,7 @@ for(ind in c(1:7))
       mae_avg <- append(mae_avg, acc_src[5])
       
       pngName <- paste("C:\\Users\\pok\\Dropbox\\Project1_SRC\\research\\s4\\3G\\data_081315\\",target,"\\app_",ind,".png", sep="")
-      png(pngName, width=800, height=450, units ="px", res = 200)
+      png(pngName, width=800, height=600, units ="px", res = 200)
       par(mar= c(2.5, 3.0, 1.0, 1.0), mgp=c(1.2,0.5,0), xaxs="r", yaxs= "r", cex.axis = 0.6,cex.lab  = 0.8)
       
       plot(mea_pw,type="l", xlab="Time(sec)", ylab="Power(mW)", ylim=c(0,8000), lwd=2)

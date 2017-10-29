@@ -27,7 +27,7 @@ async_power_estimate <- function(input)
 			sim <- negDistMat(bind,r=2)
 		 
 			#-100 is a threshold value, you can change it.
-			if(sim[1,2] > -100)
+			if(sim[1,2] > -200)
 			{
 				
 				async_pow <- asyncTable[a,2]
